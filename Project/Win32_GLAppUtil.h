@@ -427,7 +427,7 @@ static OGL Platform;
 //------------------------------------------------------------------------------
 struct ShaderFill
 {
-    GLuint            program;
+    GLuint            program; // ID
     TextureBuffer   * texture;
 
     ShaderFill(GLuint vertexShader, GLuint pixelShader, TextureBuffer* _texture)

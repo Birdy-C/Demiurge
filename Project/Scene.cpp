@@ -1,5 +1,134 @@
 #pragma once
+#include <iostream>
+#include <vector>
+#include <glm.hpp>
 #include "Scene.h"
+#include "shader.h"
+#include "stb_image.h"
+
+// ==============================================================
+// Place for skybox
+// ==============================================================
+glm::mat4 OVR2glm(OVR::Matrix4f m)
+{
+	return glm::mat4(
+		m.M[0][0], m.M[0][1], m.M[0][2], m.M[0][3],
+		m.M[1][0], m.M[1][1], m.M[1][2], m.M[1][3],
+		m.M[2][0], m.M[2][1], m.M[2][2], m.M[2][3],
+		m.M[3][0], m.M[3][1], m.M[3][2], m.M[3][3]
+	);
+}
+float skyboxVertices[] = {
+	// positions          
+	-1.0f,  1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	-1.0f,  1.0f, -1.0f,
+	1.0f,  1.0f, -1.0f,
+	1.0f,  1.0f,  1.0f,
+	1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	1.0f, -1.0f,  1.0f
+};
+
+unsigned int loadCubemap(std::vector<std::string> faces)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	return textureID;
+}
+
+unsigned int loadTexture(char const * path)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
+}
 
 GLuint Scene::CreateShader(GLenum type, const char* path)
 {
@@ -48,8 +177,6 @@ void Scene::Init(int includeIntensiveGPUobject)
 {
 	GLuint    vshader = CreateShader(GL_VERTEX_SHADER, "../../../Shader/normal.vs");
 	GLuint    fshader = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/normal.fs");
-	//GLuint    vshader_sky = CreateShader(GL_VERTEX_SHADER, "../../../Shader/skybox.vs");
-	//GLuint    fshader_sky = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/skybox.fs");
 	// Make textures
 	ShaderFill * grid_material[4];
 	for (int k = 0; k < 4; ++k)
@@ -79,12 +206,6 @@ void Scene::Init(int includeIntensiveGPUobject)
 	m->AllocateBuffers();
 	Add(m);
 
-	//m = new Model(Vector3f(0, 0, 0), grid_material[1]);  // Walls
-	//m->AddSolidColorBox(-10.1f, 0.0f, -20.0f, -10.0f, 4.0f, 20.0f, 0xff808080); // Left Wall
-	//m->AddSolidColorBox(-10.0f, -0.1f, -20.1f, 10.0f, 4.0f, -20.0f, 0xff808080); // Back Wall
-	//m->AddSolidColorBox(10.0f, -0.1f, -20.0f, 10.1f, 4.0f, 20.0f, 0xff808080); // Right Wall
-	//m->AllocateBuffers();
-	//Add(m);
 
 	if (includeIntensiveGPUobject)// Why can't I remove this?
 	{
@@ -101,10 +222,6 @@ void Scene::Init(int includeIntensiveGPUobject)
 	m->AllocateBuffers();
 	Add(m);
 
-	//m = new Model(Vector3f(0, 0, 0), grid_material[2]);  // Ceiling
-	//m->AddSolidColorBox(-10.0f, 4.0f, -20.0f, 10.0f, 4.1f, 20.1f, 0xff808080);
-	//m->AllocateBuffers();
-	//Add(m);
 
 	m = new Model(Vector3f(0, 0, 0), grid_material[3]);  // Fixtures & furniture
 	m->AddSolidColorBox(9.5f, 0.75f, 3.0f, 10.1f, 2.5f, 3.1f, 0xff383838);   // Right side shelf// Verticals
@@ -135,4 +252,65 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 	m->AllocateBuffers();
 	Add(m);
+
+
+	// ===================================================
+	// skybox 
+	// ===================================================
+	//GLuint    vshader_sky = CreateShader(GL_VERTEX_SHADER, "../../../Shader/skybox.vs");
+	//GLuint    fshader_sky = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/skybox.fs");
+
+	SkyBox.skyboxShader = new Shader("../../../Shader/skybox.vs", "../../../Shader/skybox.fs");
+	glGenVertexArrays(1, &SkyBox.skyboxVAO);
+	glGenBuffers(1, &SkyBox.skyboxVBO);
+	glBindVertexArray(SkyBox.skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, SkyBox.skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+	// load textures
+	// -------------
+
+	std::vector<std::string> faces
+	{
+		"../../../Src/ame_nebula/purplenebula_rt.tga",
+		"../../../Src/ame_nebula/purplenebula_lf.tga",
+		"../../../Src/ame_nebula/purplenebula_up.tga",
+		"../../../Src/ame_nebula/purplenebula_dn.tga",
+		"../../../Src/ame_nebula/purplenebula_ft.tga",
+		"../../../Src/ame_nebula/purplenebula_bk.tga"
+	};
+
+	SkyBox.cubemapTexture = loadCubemap(faces);
+
+	// shader configuration
+	// --------------------
+	//ShaderFill SkyboxShader(vshader_sky, fshader_sky, cubemapTexture);
+	SkyBox.skyboxShader->use();
+	SkyBox.skyboxShader->setInt("skybox", 0);
+
+}
+
+void Scene::Render(Matrix4f view, Matrix4f proj)
+{
+	for (int i = 0; i < numModels; ++i)
+		Models[i]->Render(view, proj);
+
+	// ==============================================================
+	// Place for skybox
+	// ==============================================================
+
+	// draw skybox as last
+	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+	SkyBox.skyboxShader->use();
+	SkyBox.skyboxShader->setMat4("view", OVR2glm(view));
+	SkyBox.skyboxShader->setMat4("projection", OVR2glm(proj));
+	// skybox cube
+	glBindVertexArray(SkyBox.skyboxVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox.cubemapTexture);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthFunc(GL_LESS); // set depth function back to default
 }

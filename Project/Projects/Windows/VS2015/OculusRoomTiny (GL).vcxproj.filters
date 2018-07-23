@@ -17,6 +17,8 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Win32_GLAppUtil.h" />
     <ClInclude Include="..\..\..\Scene.h" />
+    <ClInclude Include="..\..\..\stb_image.h" />
+    <ClInclude Include="..\..\..\shader.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GLE">

@@ -1,3 +1,20 @@
 ﻿  Scene.cpp
-  OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).exe
-  OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).pdb (Full PDB)
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(205): note: 参见对正在编译的类 模板 实例化“glm::vec<2,T,Q>”的引用
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(226): note: 参见对正在编译的类 模板 实例化“glm::vec<3,T,Q>”的引用
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(271): note: 参见对正在编译的类 模板 实例化“glm::vec<4,T,Q>”的引用
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(68): warning C4101: “infoLog”: 未引用的局部变量
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(67): warning C4101: “success”: 未引用的局部变量
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(114): warning C4701: 使用了可能未初始化的局部变量“format”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(94): warning C4701: 使用了可能未初始化的局部变量“geometry”
+Scene.obj : error LNK2019: 无法解析的外部符号 _stbi_load，该符号在函数 __catch$?CreateShader@Scene@@QAEIIPBD@Z$0 中被引用
+Scene.obj : error LNK2019: 无法解析的外部符号 _stbi_image_free，该符号在函数 __catch$?CreateShader@Scene@@QAEIIPBD@Z$0 中被引用
+E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).exe : fatal error LNK1120: 2 个无法解析的外部命令
