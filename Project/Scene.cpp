@@ -11,6 +11,12 @@
 // ==============================================================
 glm::mat4 OVR2glm(OVR::Matrix4f m)
 {
+	glm::mat4 T(
+		m.M[0][0], m.M[0][1], m.M[0][2], m.M[0][3],
+		m.M[1][0], m.M[1][1], m.M[1][2], m.M[1][3],
+		m.M[2][0], m.M[2][1], m.M[2][2], m.M[2][3],
+		m.M[3][0], m.M[3][1], m.M[3][2], m.M[3][3]
+	);
 	return glm::mat4(
 		m.M[0][0], m.M[0][1], m.M[0][2], m.M[0][3],
 		m.M[1][0], m.M[1][1], m.M[1][2], m.M[1][3],
@@ -18,6 +24,7 @@ glm::mat4 OVR2glm(OVR::Matrix4f m)
 		m.M[3][0], m.M[3][1], m.M[3][2], m.M[3][3]
 	);
 }
+
 float skyboxVertices[] = {
 	// positions          
 	-1.0f,  1.0f, -1.0f,
@@ -178,96 +185,45 @@ void Scene::Init(int includeIntensiveGPUobject)
 	GLuint    vshader = CreateShader(GL_VERTEX_SHADER, "../../../Shader/normal.vs");
 	GLuint    fshader = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/normal.fs");
 	// Make textures
-	ShaderFill * grid_material[4];
-	for (int k = 0; k < 4; ++k)
+	ShaderFill * grid_material;
+	static DWORD tex_pixels[256 * 256];
+	for (int j = 0; j < 256; ++j)
 	{
-		static DWORD tex_pixels[256 * 256];
-		for (int j = 0; j < 256; ++j)
+		for (int i = 0; i < 256; ++i)
 		{
-			for (int i = 0; i < 256; ++i)
-			{
-				if (k == 0) tex_pixels[j * 256 + i] = (((i >> 7) ^ (j >> 7)) & 1) ? 0xffb4b4b4 : 0xff505050;// floor
-				if (k == 1) tex_pixels[j * 256 + i] = (((j / 4 & 15) == 0) || (((i / 4 & 15) == 0) && ((((i / 4 & 31) == 0) ^ ((j / 4 >> 4) & 1)) == 0)))
-					? 0xff3c3c3c : 0xffb4b4b4;// wall
-				if (k == 2) tex_pixels[j * 256 + i] = (i / 4 == 0 || j / 4 == 0) ? 0xff505050 : 0xffb4b4b4;// ceiling
-				if (k == 3) tex_pixels[j * 256 + i] = 0xffffffff;// blank
-			}
+			tex_pixels[j * 256 + i] = (((i >> 7) ^ (j >> 7)) & 1) ? 0xffb4b4b4 : 0xff505050;// floor			}
 		}
-		TextureBuffer * generated_texture = new TextureBuffer(false, Sizei(256, 256), 4, (unsigned char *)tex_pixels);
-		grid_material[k] = new ShaderFill(vshader, fshader, generated_texture);
 	}
+	int width, height, nrChannels;
+
+	unsigned char *data = stbi_load("../../../Src/skybox/right.jpg",  &width, &height, &nrChannels, 0);
+
+	//TextureBuffer * generated_texture = new TextureBuffer(false, Sizei(width, height), 4, (unsigned char *)tex_pixels);
+	TextureBuffer * generated_texture = new TextureBuffer(false, Sizei(width, height), 4, (unsigned char *)data);
+
+	grid_material = new ShaderFill(vshader, fshader, generated_texture);
 
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
 
-	{
-		// Construct geometry
-		Model * m = new Model(Vector3f(0, 0, 0), grid_material[2]);  // Moving box
-		m->AddSolidColorBox(0, 0, 0, +1.0f, +1.0f, 1.0f, 0xff404040);
-		m->AllocateBuffers();
-		Add(m);
+	Model *m = new Model(Vector3f(0, 0, 0), grid_material);  // Floors
+	m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
+	m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
+	m->AllocateBuffers();
+	Add(m);
 
 
-		if (includeIntensiveGPUobject)// Why can't I remove this?
-		{
-			//m = new Model(Vector3f(0, 0, 0), grid_material[0]);  // Floors
-			//for (float depth = 0.0f; depth > -3.0f; depth -= 0.1f)
-			//    m->AddSolidColorBox(9.0f, 0.5f, -depth, -9.0f, 3.5f, -depth, 0x10ff80ff); // Partition
-			//m->AllocateBuffers();
-			////Add(m);
-		}
-
-		m = new Model(Vector3f(0, 0, 0), grid_material[0]);  // Floors
-		m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
-		m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
-		m->AllocateBuffers();
-		Add(m);
-
-
-		m = new Model(Vector3f(0, 0, 0), grid_material[3]);  // Fixtures & furniture
-		m->AddSolidColorBox(9.5f, 0.75f, 3.0f, 10.1f, 2.5f, 3.1f, 0xff383838);   // Right side shelf// Verticals
-		m->AddSolidColorBox(9.5f, 0.95f, 3.7f, 10.1f, 2.75f, 3.8f, 0xff383838);   // Right side shelf
-		m->AddSolidColorBox(9.55f, 1.20f, 2.5f, 10.1f, 1.30f, 3.75f, 0xff383838); // Right side shelf// Horizontals
-		m->AddSolidColorBox(9.55f, 2.00f, 3.05f, 10.1f, 2.10f, 4.2f, 0xff383838); // Right side shelf
-		m->AddSolidColorBox(5.0f, 1.1f, 20.0f, 10.0f, 1.2f, 20.1f, 0xff383838);   // Right railing   
-		m->AddSolidColorBox(-10.0f, 1.1f, 20.0f, -5.0f, 1.2f, 20.1f, 0xff383838);   // Left railing  
-		for (float f = 5.0f; f <= 9.0f; f += 1.0f)
-		{
-			m->AddSolidColorBox(f, 0.0f, 20.0f, f + 0.1f, 1.1f, 20.1f, 0xff505050);// Left Bars
-			m->AddSolidColorBox(-f, 1.1f, 20.0f, -f - 0.1f, 0.0f, 20.1f, 0xff505050);// Right Bars
-		}
-		m->AddSolidColorBox(-1.8f, 0.8f, 1.0f, 0.0f, 0.7f, 0.0f, 0xff505000); // Table
-		m->AddSolidColorBox(-1.8f, 0.0f, 0.0f, -1.7f, 0.7f, 0.1f, 0xff505000); // Table Leg 
-		m->AddSolidColorBox(-1.8f, 0.7f, 1.0f, -1.7f, 0.0f, 0.9f, 0xff505000); // Table Leg 
-		m->AddSolidColorBox(0.0f, 0.0f, 1.0f, -0.1f, 0.7f, 0.9f, 0xff505000); // Table Leg 
-		m->AddSolidColorBox(0.0f, 0.7f, 0.0f, -0.1f, 0.0f, 0.1f, 0xff505000); // Table Leg 
-		m->AddSolidColorBox(-1.4f, 0.5f, -1.1f, -0.8f, 0.55f, -0.5f, 0xff202050); // Chair Set
-		m->AddSolidColorBox(-1.4f, 0.0f, -1.1f, -1.34f, 1.0f, -1.04f, 0xff202050); // Chair Leg 1
-		m->AddSolidColorBox(-1.4f, 0.5f, -0.5f, -1.34f, 0.0f, -0.56f, 0xff202050); // Chair Leg 2
-		m->AddSolidColorBox(-0.8f, 0.0f, -0.5f, -0.86f, 0.5f, -0.56f, 0xff202050); // Chair Leg 2
-		m->AddSolidColorBox(-0.8f, 1.0f, -1.1f, -0.86f, 0.0f, -1.04f, 0xff202050); // Chair Leg 2
-		m->AddSolidColorBox(-1.4f, 0.97f, -1.05f, -0.8f, 0.92f, -1.10f, 0xff202050); // Chair Back high bar
-
-		for (float f = 3.0f; f <= 6.6f; f += 0.4f)
-			m->AddSolidColorBox(-3, 0.0f, f, -2.9f, 1.3f, f + 0.1f, 0xff404040); // Posts
-
-		m->AllocateBuffers();
-		Add(m);
-	}
 
 	// ===================================================
 	// skybox 
 	// ===================================================
-	//GLuint    vshader_sky = CreateShader(GL_VERTEX_SHADER, "../../../Shader/skybox.vs");
-	//GLuint    fshader_sky = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/skybox.fs");
 
-	//SkyBox.skyboxShader = new Shader("../../../Shader/skybox.vs", "../../../Shader/skybox.fs");
-	SkyBox.skyboxShader = new Shader("../../../Shader/normal.vs", "../../../Shader/normal.fs");
-	unsigned int skyboxVBO;
+	SkyBox.skyboxShader = new Shader("../../../Shader/skybox.vs", "../../../Shader/skybox.fs");
+	//SkyBox.skyboxShader = new Shader("../../../Shader/normal.vs", "../../../Shader/normal.fs");
 	glGenVertexArrays(1, &SkyBox.skyboxVAO);
-	glGenBuffers(1, &skyboxVBO);
+	glGenBuffers(1, &SkyBox.skyboxVBO);
 	glBindVertexArray(SkyBox.skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, SkyBox.skyboxVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -275,23 +231,31 @@ void Scene::Init(int includeIntensiveGPUobject)
 	// load textures
 	// -------------
 
+	//std::vector<std::string> faces
+	//{
+	//	"../../../Src/ame_nebula/purplenebula_rt.tga",
+	//	"../../../Src/ame_nebula/purplenebula_lf.tga",
+	//	"../../../Src/ame_nebula/purplenebula_up.tga",
+	//	"../../../Src/ame_nebula/purplenebula_dn.tga",
+	//	"../../../Src/ame_nebula/purplenebula_ft.tga",
+	//	"../../../Src/ame_nebula/purplenebula_bk.tga"
+
+	//};
+	
 	std::vector<std::string> faces
 	{
-		"../../../Src/ame_nebula/purplenebula_rt.tga",
-		"../../../Src/ame_nebula/purplenebula_lf.tga",
-		"../../../Src/ame_nebula/purplenebula_up.tga",
-		"../../../Src/ame_nebula/purplenebula_dn.tga",
-		"../../../Src/ame_nebula/purplenebula_ft.tga",
-		"../../../Src/ame_nebula/purplenebula_bk.tga"
-
+		"../../../Src/skybox/right.jpg",
+		"../../../Src/skybox/left.jpg",
+		"../../../Src/skybox/top.jpg",
+		"../../../Src/skybox/bottom.jpg",
+		"../../../Src/skybox/front.jpg",
+		"../../../Src/skybox/back.jpg"
 	};
-
 
 	SkyBox.cubemapTexture = loadCubemap(faces);
 
 	// shader configuration
 	// --------------------
-	//ShaderFill SkyboxShader(vshader_sky, fshader_sky, cubemapTexture);
 	SkyBox.skyboxShader->use();
 	SkyBox.skyboxShader->setInt("skybox", 0);
 
@@ -306,6 +270,8 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 	for (int i = 0; i < numModels; ++i)
 		Models[i]->Render(view, proj);
 
+
+
 	// ==============================================================
 	// Place for skybox
 	// ==============================================================
@@ -313,16 +279,23 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 	// draw skybox as last
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	SkyBox.skyboxShader->use();
+	SkyBox.skyboxShader->setInt("skybox", 0);
 	SkyBox.skyboxShader->setMat4("view", OVR2glm(view));
 	SkyBox.skyboxShader->setMat4("projection", OVR2glm(proj));
 	// skybox cube
 	glBindVertexArray(SkyBox.skyboxVAO);
 	glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox.cubemapTexture);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, Models[0]->Fill->texture->texId);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox.cubemapTexture);
+
+
+	//glBindVertexArray(SkyBox.skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, SkyBox.skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	
+	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS); // set depth function back to default
 }

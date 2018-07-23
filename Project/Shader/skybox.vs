@@ -1,5 +1,5 @@
 #version 150
-layout (location = 0) in vec3 aPos;
+in vec3 aPos;
 
 out vec3 TexCoords;
 
