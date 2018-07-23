@@ -3,7 +3,7 @@
 
 //#include <glad/glad.h>
 //#include <glm/glm.hpp>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include "OVR_CAPI_GL.h"
 #include "GL/CAPI_GLE.h"
 

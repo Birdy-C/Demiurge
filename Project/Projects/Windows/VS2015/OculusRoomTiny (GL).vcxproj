@@ -23,6 +23,7 @@
     <ClCompile Include="..\..\..\GLApp.cpp" />
     <ClCompile Include="..\..\..\main.cpp" />
     <ClCompile Include="..\..\..\Scene.cpp" />
+    <ClCompile Include="..\..\..\stb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE.h" />
@@ -89,7 +90,7 @@
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(ProjectDir)..\..\..\Obj\Windows\$(Platform)\$(Configuration)\VS2015\</IntDir>
     <OutDir>$(ProjectDir)..\..\..\Bin\Windows\$(Platform)\$(Configuration)\VS2015\</OutDir>
-    <IncludePath>E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\glm;E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\stb-master;$(IncludePath)</IncludePath>
+    <IncludePath>E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>

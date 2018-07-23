@@ -1,10 +1,10 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include "Scene.h"
 #include "shader.h"
-#include "stb_image.h"
+#include "stb-master/stb_image.h"
 
 // ==============================================================
 // Place for skybox
@@ -200,59 +200,60 @@ void Scene::Init(int includeIntensiveGPUobject)
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
 
-	// Construct geometry
-	Model * m = new Model(Vector3f(0, 0, 0), grid_material[2]);  // Moving box
-	m->AddSolidColorBox(0, 0, 0, +1.0f, +1.0f, 1.0f, 0xff404040);
-	m->AllocateBuffers();
-	Add(m);
-
-
-	if (includeIntensiveGPUobject)// Why can't I remove this?
 	{
-		//m = new Model(Vector3f(0, 0, 0), grid_material[0]);  // Floors
-		//for (float depth = 0.0f; depth > -3.0f; depth -= 0.1f)
-		//    m->AddSolidColorBox(9.0f, 0.5f, -depth, -9.0f, 3.5f, -depth, 0x10ff80ff); // Partition
-		//m->AllocateBuffers();
-		////Add(m);
+		// Construct geometry
+		Model * m = new Model(Vector3f(0, 0, 0), grid_material[2]);  // Moving box
+		m->AddSolidColorBox(0, 0, 0, +1.0f, +1.0f, 1.0f, 0xff404040);
+		m->AllocateBuffers();
+		Add(m);
+
+
+		if (includeIntensiveGPUobject)// Why can't I remove this?
+		{
+			//m = new Model(Vector3f(0, 0, 0), grid_material[0]);  // Floors
+			//for (float depth = 0.0f; depth > -3.0f; depth -= 0.1f)
+			//    m->AddSolidColorBox(9.0f, 0.5f, -depth, -9.0f, 3.5f, -depth, 0x10ff80ff); // Partition
+			//m->AllocateBuffers();
+			////Add(m);
+		}
+
+		m = new Model(Vector3f(0, 0, 0), grid_material[0]);  // Floors
+		m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
+		m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
+		m->AllocateBuffers();
+		Add(m);
+
+
+		m = new Model(Vector3f(0, 0, 0), grid_material[3]);  // Fixtures & furniture
+		m->AddSolidColorBox(9.5f, 0.75f, 3.0f, 10.1f, 2.5f, 3.1f, 0xff383838);   // Right side shelf// Verticals
+		m->AddSolidColorBox(9.5f, 0.95f, 3.7f, 10.1f, 2.75f, 3.8f, 0xff383838);   // Right side shelf
+		m->AddSolidColorBox(9.55f, 1.20f, 2.5f, 10.1f, 1.30f, 3.75f, 0xff383838); // Right side shelf// Horizontals
+		m->AddSolidColorBox(9.55f, 2.00f, 3.05f, 10.1f, 2.10f, 4.2f, 0xff383838); // Right side shelf
+		m->AddSolidColorBox(5.0f, 1.1f, 20.0f, 10.0f, 1.2f, 20.1f, 0xff383838);   // Right railing   
+		m->AddSolidColorBox(-10.0f, 1.1f, 20.0f, -5.0f, 1.2f, 20.1f, 0xff383838);   // Left railing  
+		for (float f = 5.0f; f <= 9.0f; f += 1.0f)
+		{
+			m->AddSolidColorBox(f, 0.0f, 20.0f, f + 0.1f, 1.1f, 20.1f, 0xff505050);// Left Bars
+			m->AddSolidColorBox(-f, 1.1f, 20.0f, -f - 0.1f, 0.0f, 20.1f, 0xff505050);// Right Bars
+		}
+		m->AddSolidColorBox(-1.8f, 0.8f, 1.0f, 0.0f, 0.7f, 0.0f, 0xff505000); // Table
+		m->AddSolidColorBox(-1.8f, 0.0f, 0.0f, -1.7f, 0.7f, 0.1f, 0xff505000); // Table Leg 
+		m->AddSolidColorBox(-1.8f, 0.7f, 1.0f, -1.7f, 0.0f, 0.9f, 0xff505000); // Table Leg 
+		m->AddSolidColorBox(0.0f, 0.0f, 1.0f, -0.1f, 0.7f, 0.9f, 0xff505000); // Table Leg 
+		m->AddSolidColorBox(0.0f, 0.7f, 0.0f, -0.1f, 0.0f, 0.1f, 0xff505000); // Table Leg 
+		m->AddSolidColorBox(-1.4f, 0.5f, -1.1f, -0.8f, 0.55f, -0.5f, 0xff202050); // Chair Set
+		m->AddSolidColorBox(-1.4f, 0.0f, -1.1f, -1.34f, 1.0f, -1.04f, 0xff202050); // Chair Leg 1
+		m->AddSolidColorBox(-1.4f, 0.5f, -0.5f, -1.34f, 0.0f, -0.56f, 0xff202050); // Chair Leg 2
+		m->AddSolidColorBox(-0.8f, 0.0f, -0.5f, -0.86f, 0.5f, -0.56f, 0xff202050); // Chair Leg 2
+		m->AddSolidColorBox(-0.8f, 1.0f, -1.1f, -0.86f, 0.0f, -1.04f, 0xff202050); // Chair Leg 2
+		m->AddSolidColorBox(-1.4f, 0.97f, -1.05f, -0.8f, 0.92f, -1.10f, 0xff202050); // Chair Back high bar
+
+		for (float f = 3.0f; f <= 6.6f; f += 0.4f)
+			m->AddSolidColorBox(-3, 0.0f, f, -2.9f, 1.3f, f + 0.1f, 0xff404040); // Posts
+
+		m->AllocateBuffers();
+		Add(m);
 	}
-
-	m = new Model(Vector3f(0, 0, 0), grid_material[0]);  // Floors
-	m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
-	m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
-	m->AllocateBuffers();
-	Add(m);
-
-
-	m = new Model(Vector3f(0, 0, 0), grid_material[3]);  // Fixtures & furniture
-	m->AddSolidColorBox(9.5f, 0.75f, 3.0f, 10.1f, 2.5f, 3.1f, 0xff383838);   // Right side shelf// Verticals
-	m->AddSolidColorBox(9.5f, 0.95f, 3.7f, 10.1f, 2.75f, 3.8f, 0xff383838);   // Right side shelf
-	m->AddSolidColorBox(9.55f, 1.20f, 2.5f, 10.1f, 1.30f, 3.75f, 0xff383838); // Right side shelf// Horizontals
-	m->AddSolidColorBox(9.55f, 2.00f, 3.05f, 10.1f, 2.10f, 4.2f, 0xff383838); // Right side shelf
-	m->AddSolidColorBox(5.0f, 1.1f, 20.0f, 10.0f, 1.2f, 20.1f, 0xff383838);   // Right railing   
-	m->AddSolidColorBox(-10.0f, 1.1f, 20.0f, -5.0f, 1.2f, 20.1f, 0xff383838);   // Left railing  
-	for (float f = 5.0f; f <= 9.0f; f += 1.0f)
-	{
-		m->AddSolidColorBox(f, 0.0f, 20.0f, f + 0.1f, 1.1f, 20.1f, 0xff505050);// Left Bars
-		m->AddSolidColorBox(-f, 1.1f, 20.0f, -f - 0.1f, 0.0f, 20.1f, 0xff505050);// Right Bars
-	}
-	m->AddSolidColorBox(-1.8f, 0.8f, 1.0f, 0.0f, 0.7f, 0.0f, 0xff505000); // Table
-	m->AddSolidColorBox(-1.8f, 0.0f, 0.0f, -1.7f, 0.7f, 0.1f, 0xff505000); // Table Leg 
-	m->AddSolidColorBox(-1.8f, 0.7f, 1.0f, -1.7f, 0.0f, 0.9f, 0xff505000); // Table Leg 
-	m->AddSolidColorBox(0.0f, 0.0f, 1.0f, -0.1f, 0.7f, 0.9f, 0xff505000); // Table Leg 
-	m->AddSolidColorBox(0.0f, 0.7f, 0.0f, -0.1f, 0.0f, 0.1f, 0xff505000); // Table Leg 
-	m->AddSolidColorBox(-1.4f, 0.5f, -1.1f, -0.8f, 0.55f, -0.5f, 0xff202050); // Chair Set
-	m->AddSolidColorBox(-1.4f, 0.0f, -1.1f, -1.34f, 1.0f, -1.04f, 0xff202050); // Chair Leg 1
-	m->AddSolidColorBox(-1.4f, 0.5f, -0.5f, -1.34f, 0.0f, -0.56f, 0xff202050); // Chair Leg 2
-	m->AddSolidColorBox(-0.8f, 0.0f, -0.5f, -0.86f, 0.5f, -0.56f, 0xff202050); // Chair Leg 2
-	m->AddSolidColorBox(-0.8f, 1.0f, -1.1f, -0.86f, 0.0f, -1.04f, 0xff202050); // Chair Leg 2
-	m->AddSolidColorBox(-1.4f, 0.97f, -1.05f, -0.8f, 0.92f, -1.10f, 0xff202050); // Chair Back high bar
-
-	for (float f = 3.0f; f <= 6.6f; f += 0.4f)
-		m->AddSolidColorBox(-3, 0.0f, f, -2.9f, 1.3f, f + 0.1f, 0xff404040); // Posts
-
-	m->AllocateBuffers();
-	Add(m);
-
 
 	// ===================================================
 	// skybox 
@@ -260,14 +261,16 @@ void Scene::Init(int includeIntensiveGPUobject)
 	//GLuint    vshader_sky = CreateShader(GL_VERTEX_SHADER, "../../../Shader/skybox.vs");
 	//GLuint    fshader_sky = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/skybox.fs");
 
-	SkyBox.skyboxShader = new Shader("../../../Shader/skybox.vs", "../../../Shader/skybox.fs");
+	//SkyBox.skyboxShader = new Shader("../../../Shader/skybox.vs", "../../../Shader/skybox.fs");
+	SkyBox.skyboxShader = new Shader("../../../Shader/normal.vs", "../../../Shader/normal.fs");
+	unsigned int skyboxVBO;
 	glGenVertexArrays(1, &SkyBox.skyboxVAO);
-	glGenBuffers(1, &SkyBox.skyboxVBO);
+	glGenBuffers(1, &skyboxVBO);
 	glBindVertexArray(SkyBox.skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, SkyBox.skyboxVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 	// load textures
 	// -------------
@@ -280,7 +283,9 @@ void Scene::Init(int includeIntensiveGPUobject)
 		"../../../Src/ame_nebula/purplenebula_dn.tga",
 		"../../../Src/ame_nebula/purplenebula_ft.tga",
 		"../../../Src/ame_nebula/purplenebula_bk.tga"
+
 	};
+
 
 	SkyBox.cubemapTexture = loadCubemap(faces);
 
@@ -294,6 +299,10 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 void Scene::Render(Matrix4f view, Matrix4f proj)
 {
+	// configure global opengl state
+	// -----------------------------
+	glEnable(GL_DEPTH_TEST);
+
 	for (int i = 0; i < numModels; ++i)
 		Models[i]->Render(view, proj);
 
@@ -309,8 +318,11 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 	// skybox cube
 	glBindVertexArray(SkyBox.skyboxVAO);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox.cubemapTexture);
+	//glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox.cubemapTexture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, Models[0]->Fill->texture->texId);
+
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+	
 	glBindVertexArray(0);
 	glDepthFunc(GL_LESS); // set depth function back to default
 }
