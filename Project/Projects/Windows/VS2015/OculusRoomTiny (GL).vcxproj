@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -20,12 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE.cpp" />
+    <ClCompile Include="..\..\..\GLApp.cpp" />
     <ClCompile Include="..\..\..\main.cpp" />
+    <ClCompile Include="..\..\..\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE.h" />
     <ClInclude Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE_GL.h" />
-    <ClInclude Include="..\..\..\..\..\OculusRoomTiny_Advanced\Common\Win32_GLAppUtil.h" />
+    <ClInclude Include="..\..\..\Scene.h" />
+    <ClInclude Include="..\..\..\Win32_GLAppUtil.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{396D645E-3224-433C-AFBA-6EF6919A2214}</ProjectGuid>
