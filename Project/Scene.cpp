@@ -222,70 +222,51 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 	std::vector<std::string> faces
 	{
-		"../../../Src/skybox/right.jpg",
-		"../../../Src/skybox/left.jpg",
 		"../../../Src/skybox/top.jpg",
 		"../../../Src/skybox/bottom.jpg",
 		"../../../Src/skybox/front.jpg",
-		"../../../Src/skybox/back.jpg"
+		"../../../Src/skybox/back.jpg",
+		"../../../Src/skybox/left.jpg",
+		"../../../Src/skybox/right.jpg"
+		//	"../../../Src/ame_nebula/purplenebula_rt.tga",
+		//	"../../../Src/ame_nebula/purplenebula_lf.tga",
+		//	"../../../Src/ame_nebula/purplenebula_up.tga",
+		//	"../../../Src/ame_nebula/purplenebula_dn.tga",
+		//	"../../../Src/ame_nebula/purplenebula_ft.tga",
+		//	"../../../Src/ame_nebula/purplenebula_bk.tga"
 	};
 
 	SkyBox.cubemapTexture = loadCubemap(faces);
 
-	TextureBuffer * generated_texturesky = new TextureBuffer(SkyBox.cubemapTexture);
+	ShaderFill *grid_materialsky[6];
+	TextureBuffer * generated_texturesky;
+	for (int i = 0; i < 6; i++)
+	{
+		data = stbi_load(faces.at(i).c_str(), &width, &height, &nrChannels, 0);
+		generated_texturesky = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+		grid_materialsky[i] = new ShaderFill(vshader, fshader, generated_texturesky);
 
-	ShaderFill * grid_materialsky = new ShaderFill(vshader, fshader, generated_texturesky);
+		Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[i]);
+		m_sky->AddPlane(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, i);
+		m_sky->AllocateBuffers();
+		Add(m_sky);
+	}
+	//data = stbi_load(faces.at(0).c_str(), &width, &height, &nrChannels, 0);
+	//generated_texturesky = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+	//grid_materialsky[0] = new ShaderFill(vshader, fshader, generated_texturesky);
+
+	//Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[0]);
+	//m_sky->AddSolidSkyBox(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, 0xFFFFFFFF);
+	////m_sky->AddPlane(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, i);
+	//m_sky->AllocateBuffers();
+	//Add(m_sky);
+
+	//TextureBuffer * generated_texturesky = new TextureBuffer(SkyBox.cubemapTexture);
+	//ShaderFill * grid_materialsky = new ShaderFill(vshader, fshader, generated_texturesky);
 
 	glDeleteShader(vshader_sky);
 	glDeleteShader(fshader_sky);
 
-	Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky);
-	m_sky->AddSolidSkyBox(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, 0xffffffff);
-
-	m_sky->AllocateBuffers();
-
-	Add(m_sky);
-
-	////SkyBox.skyboxShader = new Shader("../../../Shader/skybox.vs", "../../../Shader/skybox.fs");
-	//SkyBox.skyboxShader = new Shader("../../../Shader/normal.vs", "../../../Shader/normal.fs");
-	//glGenVertexArrays(1, &SkyBox.skyboxVAO);
-	//glGenBuffers(1, &SkyBox.skyboxVBO);
-	//glBindVertexArray(SkyBox.skyboxVAO);
-	//glBindBuffer(GL_ARRAY_BUFFER, SkyBox.skyboxVBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
-
-	//// load textures
-	//// -------------
-
-	////std::vector<std::string> faces
-	////{
-	////	"../../../Src/ame_nebula/purplenebula_rt.tga",
-	////	"../../../Src/ame_nebula/purplenebula_lf.tga",
-	////	"../../../Src/ame_nebula/purplenebula_up.tga",
-	////	"../../../Src/ame_nebula/purplenebula_dn.tga",
-	////	"../../../Src/ame_nebula/purplenebula_ft.tga",
-	////	"../../../Src/ame_nebula/purplenebula_bk.tga"
-
-	////};
-
-	//std::vector<std::string> faces
-	//{
-	//	"../../../Src/skybox/right.jpg",
-	//	"../../../Src/skybox/left.jpg",
-	//	"../../../Src/skybox/top.jpg",
-	//	"../../../Src/skybox/bottom.jpg",
-	//	"../../../Src/skybox/front.jpg",
-	//	"../../../Src/skybox/back.jpg"
-	//};
-
-	//SkyBox.cubemapTexture = loadCubemap(faces);
-
-	//// shader configuration
-	//// --------------------
-	//SkyBox.skyboxShader->use();
-	//SkyBox.skyboxShader->setInt("skybox", 0);
 
 }
 
@@ -295,14 +276,14 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
 
-	for (int i = 0; i < numModels - 1; ++i)
+	for (int i = 0; i < numModels; ++i)
 		Models[i]->Render(view, proj, false);
 
 	// draw skybox
-	//view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-	glDepthMask(GL_FALSE);
-	Models[numModels - 1]->Render(view, proj, false);
-	glDepthMask(GL_TRUE);
+	//view = glm::mat4(glm::mat3(view)); // remove translation from the view matrix
+	//glDepthMask(GL_FALSE);
+	//Models[numModels - 1]->Render(view, proj, true);
+	//glDepthMask(GL_TRUE);
 
 
 }

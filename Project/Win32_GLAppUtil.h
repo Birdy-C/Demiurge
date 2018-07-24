@@ -644,18 +644,88 @@ struct Model
 
 	void AddSolidSkyBox(float x1, float y1, float z1, float x2, float y2, float z2, DWORD c)
 	{
+
+
+		for (int index = 0; index < 6; index++)
+		{
+			Vector3f Vert[][2] =
+			{
+				Vector3f(x1, y2, z1), Vector3f(z1, x1), Vector3f(x2, y2, z1), Vector3f(z1, x2),
+				Vector3f(x2, y2, z2), Vector3f(z2, x2), Vector3f(x1, y2, z2), Vector3f(z2, x1),
+				Vector3f(x1, y1, z1), Vector3f(z1, x1), Vector3f(x2, y1, z1), Vector3f(z1, x2),
+				Vector3f(x2, y1, z2), Vector3f(z2, x2), Vector3f(x1, y1, z2), Vector3f(z2, x1),
+				Vector3f(x1, y1, z2), Vector3f(z2, y1), Vector3f(x1, y1, z1), Vector3f(z1, y1),
+				Vector3f(x1, y2, z1), Vector3f(z1, y2), Vector3f(x1, y2, z2), Vector3f(z2, y2),
+				Vector3f(x2, y1, z2), Vector3f(z2, y1), Vector3f(x2, y1, z1), Vector3f(z1, y1),
+				Vector3f(x2, y2, z1), Vector3f(z1, y2), Vector3f(x2, y2, z2), Vector3f(z2, y2),
+				Vector3f(x1, y1, z1), Vector3f(x1, y1), Vector3f(x2, y1, z1), Vector3f(x2, y1),
+				Vector3f(x2, y2, z1), Vector3f(x2, y2), Vector3f(x1, y2, z1), Vector3f(x1, y2),
+				Vector3f(x1, y1, z2), Vector3f(x1, y1), Vector3f(x2, y1, z2), Vector3f(x2, y1),
+				Vector3f(x2, y2, z2), Vector3f(x2, y2), Vector3f(x1, y2, z2), Vector3f(x1, y2)
+			};
+
+			GLushort CubeIndices[] =
+			{
+				0, 1, 3, 3, 1, 2,
+				5, 4, 6, 6, 4, 7,
+				8, 9, 11, 11, 9, 10,
+				13, 12, 14, 14, 12, 15,
+				16, 17, 19, 19, 17, 18,
+				21, 20, 22, 22, 20, 23
+			};
+
+			for (int i = 0; i < sizeof(CubeIndices) / sizeof(CubeIndices[0]) / 3; ++i)
+			{
+				AddIndex(CubeIndices[3 * i] + GLushort(numVertices));
+				AddIndex(CubeIndices[3 * i + 2] + GLushort(numVertices));
+				AddIndex(CubeIndices[3 * i + 1] + GLushort(numVertices));
+			}
+
+			// Generate a quad for each box face
+			for (int v = 0; v < 6 * 4; v++)
+			{
+				// Make vertices, with some token lighting
+				Vertex vvv; vvv.Pos = Vert[v][0]; vvv.U = Vert[v][1].x > 0 ? 1 : 0; vvv.V = Vert[v][1].y > 0 ? 1 : 0;
+				float dist1 = (vvv.Pos - Vector3f(-2, 4, -2)).Length();
+				float dist2 = (vvv.Pos - Vector3f(3, 4, -3)).Length();
+				float dist3 = (vvv.Pos - Vector3f(-4, 3, 25)).Length();
+				int   bri = rand() % 160;
+				float B = ((c >> 16) & 0xff) * (bri + 192.0f * (0.65f + 8 / dist1 + 1 / dist2 + 4 / dist3)) / 255.0f;
+				float G = ((c >> 8) & 0xff) * (bri + 192.0f * (0.65f + 8 / dist1 + 1 / dist2 + 4 / dist3)) / 255.0f;
+				float R = ((c >> 0) & 0xff) * (bri + 192.0f * (0.65f + 8 / dist1 + 1 / dist2 + 4 / dist3)) / 255.0f;
+				vvv.C = (c & 0xff000000) +
+					((R > 255 ? 255 : DWORD(R)) << 16) +
+					((G > 255 ? 255 : DWORD(G)) << 8) +
+					(B > 255 ? 255 : DWORD(B));
+				AddVertex(vvv);
+			}
+		}
+	}
+
+	void AddPlane(float x1, float y1, float z1, float x2, float y2, float z2, int Index)
+	{
 		Vector3f Vert[][2] =
 		{
-			Vector3f(x1, y2, z1), Vector3f(z1, x1), Vector3f(x2, y2, z1), Vector3f(z1, x2),
-			Vector3f(x2, y2, z2), Vector3f(z2, x2), Vector3f(x1, y2, z2), Vector3f(z2, x1),
-			Vector3f(x1, y1, z1), Vector3f(z1, x1), Vector3f(x2, y1, z1), Vector3f(z1, x2),
-			Vector3f(x2, y1, z2), Vector3f(z2, x2), Vector3f(x1, y1, z2), Vector3f(z2, x1),
+			//Vector3f(x1, y2, z1), Vector3f(z1, x1), Vector3f(x2, y2, z1), Vector3f(z1, x2),
+			//Vector3f(x2, y2, z2), Vector3f(z2, x2), Vector3f(x1, y2, z2), Vector3f(z2, x1),
+			Vector3f(x1, y2, z1), Vector3f(z2, x2), Vector3f(x2, y2, z1), Vector3f(z2, x1),
+			Vector3f(x2, y2, z2), Vector3f(z1, x1), Vector3f(x1, y2, z2), Vector3f(z1, x2),
+
+			//Vector3f(x1, y1, z1), Vector3f(z1, x1), Vector3f(x2, y1, z1), Vector3f(z1, x2),
+			//Vector3f(x2, y1, z2), Vector3f(z2, x2), Vector3f(x1, y1, z2), Vector3f(z2, x1),
+
+			Vector3f(x1, y1, z1),Vector3f(z2, x1), Vector3f(x2, y1, z1), Vector3f(z2, x2),
+			Vector3f(x2, y1, z2), Vector3f(z1, x2), Vector3f(x1, y1, z2), Vector3f(z1, x1),
+
 			Vector3f(x1, y1, z2), Vector3f(z2, y1), Vector3f(x1, y1, z1), Vector3f(z1, y1),
 			Vector3f(x1, y2, z1), Vector3f(z1, y2), Vector3f(x1, y2, z2), Vector3f(z2, y2),
-			Vector3f(x2, y1, z2), Vector3f(z2, y1), Vector3f(x2, y1, z1), Vector3f(z1, y1),
-			Vector3f(x2, y2, z1), Vector3f(z1, y2), Vector3f(x2, y2, z2), Vector3f(z2, y2),
-			Vector3f(x1, y1, z1), Vector3f(x1, y1), Vector3f(x2, y1, z1), Vector3f(x2, y1),
-			Vector3f(x2, y2, z1), Vector3f(x2, y2), Vector3f(x1, y2, z1), Vector3f(x1, y2),
+
+			Vector3f(x2, y1, z2), Vector3f(z1, y1), Vector3f(x2, y1, z1), Vector3f(z2, y1),
+			Vector3f(x2, y2, z1), Vector3f(z2, y2), Vector3f(x2, y2, z2), Vector3f(z1, y2),
+
+			Vector3f(x1, y1, z1), Vector3f(x2, y1), Vector3f(x2, y1, z1), Vector3f(x1, y1),
+			Vector3f(x2, y2, z1), Vector3f(x1, y2), Vector3f(x1, y2, z1), Vector3f(x2, y2),
+
 			Vector3f(x1, y1, z2), Vector3f(x1, y1), Vector3f(x2, y1, z2), Vector3f(x2, y1),
 			Vector3f(x2, y2, z2), Vector3f(x2, y2), Vector3f(x1, y2, z2), Vector3f(x1, y2)
 		};
@@ -670,22 +740,24 @@ struct Model
 			21, 20, 22, 22, 20, 23
 		};
 
-		for (int i = 0; i < sizeof(CubeIndices) / sizeof(CubeIndices[0]) / 3; ++i)
-		{
-			AddIndex(CubeIndices[3 * i] + GLushort(numVertices));
-			AddIndex(CubeIndices[3 * i + 2] + GLushort(numVertices));
-			AddIndex(CubeIndices[3 * i + 1] + GLushort(numVertices));
-		}
+
+		AddIndex(CubeIndices[6 * Index] - 4 * Index + GLushort(numVertices));
+		AddIndex(CubeIndices[6 * Index + 2] - 4 * Index + GLushort(numVertices));
+		AddIndex(CubeIndices[6 * Index + 1] - 4 * Index + GLushort(numVertices));
+		AddIndex(CubeIndices[6 * Index + 3] - 4 * Index + GLushort(numVertices));
+		AddIndex(CubeIndices[6 * Index + 3 + 2] - 4 * Index + GLushort(numVertices));
+		AddIndex(CubeIndices[6 * Index + 3 + 1] - 4 * Index + GLushort(numVertices));
 
 		// Generate a quad for each box face
-		for (int v = 0; v < 6 * 4; v++)
+		for (int v = Index * 4; v < Index * 4 + 4; v++)
 		{
 			// Make vertices, with some token lighting
-			Vertex vvv; vvv.Pos = Vert[v][0]; vvv.U = Vert[v][1].x > 0 ? 1 : 0; vvv.V = Vert[v][1].y > 0 ? 1 : 0;
+			Vertex vvv; vvv.Pos = Vert[v][0]; vvv.U = Vert[v][1].x > 0 ? 0 : 1; vvv.V = Vert[v][1].y > 0 ? 0 : 1;
 			float dist1 = (vvv.Pos - Vector3f(-2, 4, -2)).Length();
 			float dist2 = (vvv.Pos - Vector3f(3, 4, -3)).Length();
 			float dist3 = (vvv.Pos - Vector3f(-4, 3, 25)).Length();
 			int   bri = rand() % 160;
+			DWORD c = 0xFFFFFFFF;
 			float B = ((c >> 16) & 0xff) * (bri + 192.0f * (0.65f + 8 / dist1 + 1 / dist2 + 4 / dist3)) / 255.0f;
 			float G = ((c >> 8) & 0xff) * (bri + 192.0f * (0.65f + 8 / dist1 + 1 / dist2 + 4 / dist3)) / 255.0f;
 			float R = ((c >> 0) & 0xff) * (bri + 192.0f * (0.65f + 8 / dist1 + 1 / dist2 + 4 / dist3)) / 255.0f;
@@ -695,14 +767,20 @@ struct Model
 				(B > 255 ? 255 : DWORD(B));
 			AddVertex(vvv);
 		}
-	}
 
+
+	}
 	void Render(Matrix4f view, Matrix4f proj, bool isskybox)
 	{
 		Matrix4f combined = proj * view * GetMatrix();
 
 		glUseProgram(Fill->program);
-		glUniform1i(glGetUniformLocation(Fill->program, "Texture0"), 0);
+		if (isskybox)
+		{
+			glUniform1i(glGetUniformLocation(Fill->program, "Texture0"), 0);
+		}
+		else
+			glUniform1i(glGetUniformLocation(Fill->program, "Texture0"), 0);
 		glUniformMatrix4fv(glGetUniformLocation(Fill->program, "matWVP"), 1, GL_TRUE, (FLOAT*)&combined);
 
 		glActiveTexture(GL_TEXTURE0);
