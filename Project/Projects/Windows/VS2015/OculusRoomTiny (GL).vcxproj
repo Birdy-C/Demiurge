@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE.cpp" />
-    <ClCompile Include="..\..\..\GLApp.cpp" />
     <ClCompile Include="..\..\..\main.cpp" />
     <ClCompile Include="..\..\..\Scene.cpp" />
     <ClCompile Include="..\..\..\stb.cpp" />
@@ -30,7 +29,6 @@
     <ClInclude Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE_GL.h" />
     <ClInclude Include="..\..\..\Scene.h" />
     <ClInclude Include="..\..\..\shader.h" />
-    <ClInclude Include="..\..\..\stb_image.h" />
     <ClInclude Include="..\..\..\Win32_GLAppUtil.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

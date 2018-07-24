@@ -196,10 +196,10 @@ void Scene::Init(int includeIntensiveGPUobject)
 	}
 	int width, height, nrChannels;
 
-	unsigned char *data = stbi_load("../../../Src/skybox/right.jpg",  &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("../../../Src/skybox/right.jpg", &width, &height, &nrChannels, 0);
 
 	//TextureBuffer * generated_texture = new TextureBuffer(false, Sizei(width, height), 4, (unsigned char *)tex_pixels);
-	TextureBuffer * generated_texture = new TextureBuffer(false, Sizei(width, height), 4, (unsigned char *)data);
+	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
 
 	grid_material = new ShaderFill(vshader, fshader, generated_texture);
 
@@ -210,38 +210,16 @@ void Scene::Init(int includeIntensiveGPUobject)
 	m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
 	m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
 	m->AllocateBuffers();
-	Add(m);
+	//Add(m);
 
 
 
 	// ===================================================
 	// skybox 
 	// ===================================================
+	GLuint    vshader_sky = CreateShader(GL_VERTEX_SHADER, "../../../Shader/skybox.vs");
+	GLuint    fshader_sky = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/skybox.fs");
 
-	SkyBox.skyboxShader = new Shader("../../../Shader/skybox.vs", "../../../Shader/skybox.fs");
-	//SkyBox.skyboxShader = new Shader("../../../Shader/normal.vs", "../../../Shader/normal.fs");
-	glGenVertexArrays(1, &SkyBox.skyboxVAO);
-	glGenBuffers(1, &SkyBox.skyboxVBO);
-	glBindVertexArray(SkyBox.skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, SkyBox.skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	// load textures
-	// -------------
-
-	//std::vector<std::string> faces
-	//{
-	//	"../../../Src/ame_nebula/purplenebula_rt.tga",
-	//	"../../../Src/ame_nebula/purplenebula_lf.tga",
-	//	"../../../Src/ame_nebula/purplenebula_up.tga",
-	//	"../../../Src/ame_nebula/purplenebula_dn.tga",
-	//	"../../../Src/ame_nebula/purplenebula_ft.tga",
-	//	"../../../Src/ame_nebula/purplenebula_bk.tga"
-
-	//};
-	
 	std::vector<std::string> faces
 	{
 		"../../../Src/skybox/right.jpg",
@@ -254,10 +232,60 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 	SkyBox.cubemapTexture = loadCubemap(faces);
 
-	// shader configuration
-	// --------------------
-	SkyBox.skyboxShader->use();
-	SkyBox.skyboxShader->setInt("skybox", 0);
+	TextureBuffer * generated_texturesky = new TextureBuffer(SkyBox.cubemapTexture);
+
+	ShaderFill * grid_materialsky = new ShaderFill(vshader, fshader, generated_texturesky);
+
+	glDeleteShader(vshader_sky);
+	glDeleteShader(fshader_sky);
+
+	Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky);
+	m_sky->AddSolidSkyBox(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, 0xffffffff);
+
+	m_sky->AllocateBuffers();
+
+	Add(m_sky);
+
+	////SkyBox.skyboxShader = new Shader("../../../Shader/skybox.vs", "../../../Shader/skybox.fs");
+	//SkyBox.skyboxShader = new Shader("../../../Shader/normal.vs", "../../../Shader/normal.fs");
+	//glGenVertexArrays(1, &SkyBox.skyboxVAO);
+	//glGenBuffers(1, &SkyBox.skyboxVBO);
+	//glBindVertexArray(SkyBox.skyboxVAO);
+	//glBindBuffer(GL_ARRAY_BUFFER, SkyBox.skyboxVBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+
+	//// load textures
+	//// -------------
+
+	////std::vector<std::string> faces
+	////{
+	////	"../../../Src/ame_nebula/purplenebula_rt.tga",
+	////	"../../../Src/ame_nebula/purplenebula_lf.tga",
+	////	"../../../Src/ame_nebula/purplenebula_up.tga",
+	////	"../../../Src/ame_nebula/purplenebula_dn.tga",
+	////	"../../../Src/ame_nebula/purplenebula_ft.tga",
+	////	"../../../Src/ame_nebula/purplenebula_bk.tga"
+
+	////};
+
+	//std::vector<std::string> faces
+	//{
+	//	"../../../Src/skybox/right.jpg",
+	//	"../../../Src/skybox/left.jpg",
+	//	"../../../Src/skybox/top.jpg",
+	//	"../../../Src/skybox/bottom.jpg",
+	//	"../../../Src/skybox/front.jpg",
+	//	"../../../Src/skybox/back.jpg"
+	//};
+
+	//SkyBox.cubemapTexture = loadCubemap(faces);
+
+	//// shader configuration
+	//// --------------------
+	//SkyBox.skyboxShader->use();
+	//SkyBox.skyboxShader->setInt("skybox", 0);
 
 }
 
@@ -267,35 +295,14 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
 
-	for (int i = 0; i < numModels; ++i)
-		Models[i]->Render(view, proj);
+	for (int i = 0; i < numModels - 1; ++i)
+		Models[i]->Render(view, proj, false);
+
+	// draw skybox
+	//view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+	glDepthMask(GL_FALSE);
+	Models[numModels - 1]->Render(view, proj, false);
+	glDepthMask(GL_TRUE);
 
 
-
-	// ==============================================================
-	// Place for skybox
-	// ==============================================================
-
-	// draw skybox as last
-	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-	SkyBox.skyboxShader->use();
-	SkyBox.skyboxShader->setInt("skybox", 0);
-	SkyBox.skyboxShader->setMat4("view", OVR2glm(view));
-	SkyBox.skyboxShader->setMat4("projection", OVR2glm(proj));
-	// skybox cube
-	glBindVertexArray(SkyBox.skyboxVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox.cubemapTexture);
-
-
-	//glBindVertexArray(SkyBox.skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, SkyBox.skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(0);
-	glDepthFunc(GL_LESS); // set depth function back to default
 }

@@ -5,7 +5,6 @@
     <ClCompile Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE.cpp">
       <Filter>GLE</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\GLApp.cpp" />
     <ClCompile Include="..\..\..\Scene.cpp" />
     <ClCompile Include="..\..\..\stb.cpp" />
   </ItemGroup>
@@ -18,7 +17,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Win32_GLAppUtil.h" />
     <ClInclude Include="..\..\..\Scene.h" />
-    <ClInclude Include="..\..\..\stb_image.h" />
     <ClInclude Include="..\..\..\shader.h" />
   </ItemGroup>
   <ItemGroup>
