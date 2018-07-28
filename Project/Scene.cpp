@@ -196,7 +196,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 	}
 	int width, height, nrChannels;
 
-	unsigned char *data = stbi_load("../../../Src/earth.png", &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("../../../Src/2k_earth_daymap.jpg", &width, &height, &nrChannels, 0);
 
 	//TextureBuffer * generated_texture = new TextureBuffer(false, Sizei(width, height), 4, (unsigned char *)tex_pixels);
 	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
@@ -206,15 +206,9 @@ void Scene::Init(int includeIntensiveGPUobject)
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
 
-	Model *m = new Model(Vector3f(0, 0, 0), grid_material);  // Floors
-	m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
-	//m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
-	m->AllocateBuffers();
-	//Add(m);
+	Model *m;
 
 	m = new Model(Vector3f(0, 0, 0), grid_material);  // Floors
-															 //m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
-															 //m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
 	m->AddSphere(0, 0, 0, 1, 10, 10);
 	m->AllocateBuffers();
 	Add(m);
@@ -235,14 +229,12 @@ void Scene::Init(int includeIntensiveGPUobject)
 		"../../../Src/ame_starfield/starfield_lf.tga",
 		"../../../Src/ame_starfield/starfield_rt.tga",
 	};
-			//"../../../Src/skybox/top.jpg",
-		//"../../../Src/skybox/bottom.jpg",
-		//"../../../Src/skybox/front.jpg",
-		//"../../../Src/skybox/back.jpg",
-		//"../../../Src/skybox/left.jpg",
-		//"../../../Src/skybox/right.jpg"
-
-	SkyBox.cubemapTexture = loadCubemap(faces);
+	//"../../../Src/skybox/top.jpg",
+//"../../../Src/skybox/bottom.jpg",
+//"../../../Src/skybox/front.jpg",
+//"../../../Src/skybox/back.jpg",
+//"../../../Src/skybox/left.jpg",
+//"../../../Src/skybox/right.jpg"
 
 	ShaderFill *grid_materialsky[6];
 	TextureBuffer * generated_texturesky;
@@ -295,4 +287,36 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 
 	for (int i = 0; i < numSkyModels; ++i)
 		SkyBoxModels[i]->Render(view, proj, false);
+}
+
+
+void Scene::ChangeShader(int i)
+{
+	int width, height, nrChannels;
+	char *load;
+	switch (i % 6)
+	{
+	case 0:
+		load = "../../../Src/2k_sun.jpg"; break;
+	case 1:
+		load = "../../../Src/2k_earth_daymap.jpg"; break;
+	case 2:
+		load = "../../../Src/2k_eris_fictional.jpg"; break;
+	case 3:
+		load = "../../../Src/2k_haumea_fictional.jpg"; break;
+	case 4:
+		load = "../../../Src/2k_jupiter.jpg"; break;
+	case 5:
+		load = "../../../Src/2k_mars.jpg"; break;
+	default:
+		break;
+	}
+	unsigned char *data = stbi_load(load, &width, &height, &nrChannels, 0);
+	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+	Models[0]->Fill->changTecture(generated_texture);
+}
+
+void Scene::ChangeColor()
+{
+	Models[0]->setColor(rand());
 }

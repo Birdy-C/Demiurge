@@ -480,6 +480,14 @@ struct ShaderFill
 			texture = nullptr;
 		}
 	}
+	void changTecture(TextureBuffer* _texture)
+	{
+		if (texture)
+		{
+			delete texture;
+		}
+		texture = _texture;
+	}
 };
 
 //----------------------------------------------------------------
@@ -567,6 +575,12 @@ struct Model
 		Mat = Matrix4f(Rot);
 		Mat = Matrix4f::Translation(Pos) * Mat;
 		return Mat;
+	}
+
+	void resetShader(ShaderFill * fill)
+	{
+		delete Fill;
+		Fill = fill;
 	}
 
 	void AddVertex(const Vertex& v) { Vertices[numVertices++] = v; }
@@ -881,6 +895,12 @@ struct Model
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		glUseProgram(0);
+	}
+
+	void setColor(DWORD C)
+	{
+		for (int i = 0; i < numVertices; i++)
+			Vertices[i].C = C;
 	}
 };
 
