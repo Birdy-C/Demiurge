@@ -316,6 +316,7 @@ void Scene::ChangeShader(int i)
 	Models[0]->Fill->changTecture(generated_texture);
 }
 
+
 void Scene::ChangeColor()
 {
 	Models[0]->setColor(rand());

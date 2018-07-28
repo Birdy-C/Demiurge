@@ -30,5 +30,6 @@ e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(46)
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(68): warning C4101: “infoLog”: 未引用的局部变量
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(67): warning C4101: “success”: 未引用的局部变量
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Texture.h(16): warning C4244: “=”: 从“float”转换到“char”，可能丢失数据
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).exe
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).pdb (Full PDB)
