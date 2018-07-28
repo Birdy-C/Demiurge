@@ -196,7 +196,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 	}
 	int width, height, nrChannels;
 
-	unsigned char *data = stbi_load("../../../Src/skybox/right.jpg", &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load("../../../Src/earth.png", &width, &height, &nrChannels, 0);
 
 	//TextureBuffer * generated_texture = new TextureBuffer(false, Sizei(width, height), 4, (unsigned char *)tex_pixels);
 	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
@@ -208,10 +208,16 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 	Model *m = new Model(Vector3f(0, 0, 0), grid_material);  // Floors
 	m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
-	m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
+	//m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
 	m->AllocateBuffers();
 	//Add(m);
 
+	m = new Model(Vector3f(0, 0, 0), grid_material);  // Floors
+															 //m->AddSolidColorBox(-10.0f, -0.1f, -20.0f, 10.0f, 0.0f, 20.1f, 0xff808080); // Main floor
+															 //m->AddSolidColorBox(-15.0f, -6.1f, 18.0f, 15.0f, -6.0f, 30.0f, 0xff808080); // Bottom floor
+	m->AddSphere(0, 0, 0, 1, 10, 10);
+	m->AllocateBuffers();
+	Add(m);
 
 
 	// ===================================================
@@ -222,19 +228,19 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 	std::vector<std::string> faces
 	{
-		"../../../Src/skybox/top.jpg",
-		"../../../Src/skybox/bottom.jpg",
-		"../../../Src/skybox/front.jpg",
-		"../../../Src/skybox/back.jpg",
-		"../../../Src/skybox/left.jpg",
-		"../../../Src/skybox/right.jpg"
-		//	"../../../Src/ame_nebula/purplenebula_rt.tga",
-		//	"../../../Src/ame_nebula/purplenebula_lf.tga",
-		//	"../../../Src/ame_nebula/purplenebula_up.tga",
-		//	"../../../Src/ame_nebula/purplenebula_dn.tga",
-		//	"../../../Src/ame_nebula/purplenebula_ft.tga",
-		//	"../../../Src/ame_nebula/purplenebula_bk.tga"
+		"../../../Src/ame_starfield/starfield_up.tga",
+		"../../../Src/ame_starfield/starfield_dn.tga",
+		"../../../Src/ame_starfield/starfield_ft.tga",
+		"../../../Src/ame_starfield/starfield_bk.tga",
+		"../../../Src/ame_starfield/starfield_lf.tga",
+		"../../../Src/ame_starfield/starfield_rt.tga",
 	};
+			//"../../../Src/skybox/top.jpg",
+		//"../../../Src/skybox/bottom.jpg",
+		//"../../../Src/skybox/front.jpg",
+		//"../../../Src/skybox/back.jpg",
+		//"../../../Src/skybox/left.jpg",
+		//"../../../Src/skybox/right.jpg"
 
 	SkyBox.cubemapTexture = loadCubemap(faces);
 
@@ -249,18 +255,16 @@ void Scene::Init(int includeIntensiveGPUobject)
 		Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[i]);
 		m_sky->AddPlane(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, i);
 		m_sky->AllocateBuffers();
-		Add(m_sky);
+		AddSky(m_sky);
 	}
 	//data = stbi_load(faces.at(0).c_str(), &width, &height, &nrChannels, 0);
 	//generated_texturesky = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
 	//grid_materialsky[0] = new ShaderFill(vshader, fshader, generated_texturesky);
-
 	//Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[0]);
 	//m_sky->AddSolidSkyBox(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, 0xFFFFFFFF);
 	////m_sky->AddPlane(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, i);
 	//m_sky->AllocateBuffers();
 	//Add(m_sky);
-
 	//TextureBuffer * generated_texturesky = new TextureBuffer(SkyBox.cubemapTexture);
 	//ShaderFill * grid_materialsky = new ShaderFill(vshader, fshader, generated_texturesky);
 
@@ -270,14 +274,18 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 }
 
+
 void Scene::Render(Matrix4f view, Matrix4f proj)
 {
 	// configure global opengl state
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//设置S轴拉伸方式为重复
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//设置T轴拉伸方式为重复
 
 	for (int i = 0; i < numModels; ++i)
 		Models[i]->Render(view, proj, false);
+
 
 	// draw skybox
 	//view = glm::mat4(glm::mat3(view)); // remove translation from the view matrix
@@ -285,5 +293,6 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 	//Models[numModels - 1]->Render(view, proj, true);
 	//glDepthMask(GL_TRUE);
 
-
+	for (int i = 0; i < numSkyModels; ++i)
+		SkyBoxModels[i]->Render(view, proj, false);
 }

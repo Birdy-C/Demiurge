@@ -702,7 +702,8 @@ struct Model
 		}
 	}
 
-	void AddPlane(float x1, float y1, float z1, float x2, float y2, float z2, int Index)
+	void AddPlane(float x1, float y1, float z1, float
+		x2, float y2, float z2, int Index)
 	{
 		Vector3f Vert[][2] =
 		{
@@ -770,6 +771,68 @@ struct Model
 
 
 	}
+
+	const float PI = 3.1415926;
+
+	// x y z 为圆心， theta step 和 phi step 决定插值的段数
+	void AddSphere(float x, float y, float z, float radius, int theta_steps, int phi_steps)
+	{
+		float theta = 2 * PI / theta_steps;
+		float phi = PI / phi_steps;
+
+		//Vector3f *points = new Vector3f[theta_steps * (phi_steps + 1)];
+		Vector3f center(x, y, z);
+		// initialize all the position for points
+		Vector3f top = center + Vector3f(0, 1, 0) * radius;
+		Vector3f below = center + Vector3f(0, -1, 0) * radius;
+
+
+		for (int iPhi = 0; iPhi < phi_steps; iPhi++)
+		{
+			for (int iTheta = 0; iTheta < theta_steps; iTheta++)
+			{
+				//glNormal3f(normal.x(), normal.y(), normal.z());
+				int index[4] = { (theta_steps + 1) * iPhi + iTheta ,(theta_steps + 1) * iPhi + (iTheta + 1),
+					(theta_steps + 1) * (iPhi + 1) + (iTheta + 1)  ,(theta_steps + 1) * (iPhi + 1) + iTheta };
+				AddIndex(GLushort(numVertices) + index[0]);
+				AddIndex(GLushort(numVertices) + index[1]);
+				AddIndex(GLushort(numVertices) + index[2]);
+				AddIndex(GLushort(numVertices) + index[0]);
+				AddIndex(GLushort(numVertices) + index[2]);
+				AddIndex(GLushort(numVertices) + index[3]);
+
+			}
+		}
+
+		for (int iPhi = 0; iPhi < phi_steps + 1; iPhi++)
+		{
+			for (int iTheta = 0; iTheta < theta_steps + 1; iTheta++)
+			{
+				//int index = theta_steps * iPhi + iTheta;
+				if (iPhi == 0)
+				{
+					//points[index] = below;
+					AddVertex(below, 0xFFFFFFF, float(iTheta) / theta_steps, float(iPhi) / phi_steps); //TODO
+					continue;
+				}
+				if (iPhi == phi_steps)
+				{
+					//points[index] = top;
+					AddVertex(top, 0xFFFFFFF, float(iTheta) / theta_steps, float(iPhi) / phi_steps); //TODO
+					continue;
+				}
+				float tphi = iPhi * phi - PI / 2;
+				float ttheta = theta * iTheta;
+				Vector3f result = center + Vector3f(0, 1, 0) * radius * sin(tphi)
+					+ Vector3f(1, 0, 0) *  radius * cos(tphi)*cos(ttheta) + Vector3f(0, 0, 1) * radius * cos(tphi) * sin(ttheta);
+				AddVertex(result, 0xFFFFFFF, float(iTheta) / theta_steps, float(iPhi) / phi_steps); //TODO
+			}
+		}
+
+
+
+	}
+
 	void Render(Matrix4f view, Matrix4f proj, bool isskybox)
 	{
 		Matrix4f combined = proj * view * GetMatrix();
