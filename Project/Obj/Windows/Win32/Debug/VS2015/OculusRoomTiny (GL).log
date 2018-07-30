@@ -1,4 +1,16 @@
-﻿  main.cpp
+﻿  Scene.cpp
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(205): note: 参见对正在编译的类 模板 实例化“glm::vec<2,T,Q>”的引用
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(226): note: 参见对正在编译的类 模板 实例化“glm::vec<3,T,Q>”的引用
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(271): note: 参见对正在编译的类 模板 实例化“glm::vec<4,T,Q>”的引用
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(789): warning C4305: “初始化”: 从“double”到“const float”截断
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(587): warning C4458: “Pos”的声明隐藏了类成员
   e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(547): note: 参见“Model::Pos”的声明
@@ -16,20 +28,13 @@ e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(813): warn
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(814): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(815): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(816): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(205): note: 参见对正在编译的类 模板 实例化“glm::vec<2,T,Q>”的引用
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec2.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(226): note: 参见对正在编译的类 模板 实例化“glm::vec<3,T,Q>”的引用
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec3.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(45): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-  e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(271): note: 参见对正在编译的类 模板 实例化“glm::vec<4,T,Q>”的引用
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(68): warning C4101: “infoLog”: 未引用的局部变量
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(67): warning C4101: “success”: 未引用的局部变量
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Texture.h(16): warning C4244: “=”: 从“float”转换到“char”，可能丢失数据
+..\..\..\Scene.cpp(233): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(195): warning C4100: “includeIntensiveGPUobject”: 未引用的形参
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(122): warning C4701: 使用了可能未初始化的局部变量“format”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(317): warning C4701: 使用了可能未初始化的局部变量“load”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(317): warning C4703: 使用了可能未初始化的本地指针变量“load”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\win32_glapputil.h(122): warning C4701: 使用了可能未初始化的局部变量“format”
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).exe
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).pdb (Full PDB)

@@ -5,6 +5,7 @@
 #include "Scene.h"
 #include "shader.h"
 #include "stb-master/stb_image.h"
+#include "Extras/OVR_Math.h"
 
 // ==============================================================
 // Place for skybox
@@ -180,42 +181,60 @@ GLuint Scene::CreateShader(GLenum type, const char* path)
 }
 
 
+void Scene::Calculate()
+{
+	static float cubeClock = 0;
+	cubeClock += 0.015f;
+	// roomScene->Models[0]->Pos = Vector3f(9 * (float)sin(cubeClock), 3, 9 * (float)cos(cubeClock));
+	// TODO change position and recalculate
+	menu.menuSphere->Rot = Quatf(Axis::Axis_Y, cubeClock);
+
+
+}
+
 void Scene::Init(int includeIntensiveGPUobject)
 {
 	GLuint    vshader = CreateShader(GL_VERTEX_SHADER, "../../../Shader/normal.vs");
 	GLuint    fshader = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/normal.fs");
+
 	// Make textures
-	ShaderFill * grid_material;
-	static DWORD tex_pixels[256 * 256];
-	for (int j = 0; j < 256; ++j)
-	{
-		for (int i = 0; i < 256; ++i)
-		{
-			tex_pixels[j * 256 + i] = (((i >> 7) ^ (j >> 7)) & 1) ? 0xffb4b4b4 : 0xff505050;// floor			}
-		}
-	}
 	int width, height, nrChannels;
-
-	unsigned char *data = stbi_load("../../../Src/2k_earth_daymap.jpg", &width, &height, &nrChannels, 0);
-
-	//TextureBuffer * generated_texture = new TextureBuffer(false, Sizei(width, height), 4, (unsigned char *)tex_pixels);
+	unsigned char *data = stbi_load("../../../Src/2k_sun.jpg", &width, &height, &nrChannels, 0);
 	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+	ShaderFill * grid_material_sun = new ShaderFill(vshader, fshader, generated_texture);
 
-	grid_material = new ShaderFill(vshader, fshader, generated_texture);
+	unsigned char *datamenu = stbi_load("../../../Src/menu.png", &width, &height, &nrChannels, 0);
+	TextureBuffer * generated_texture_menu = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)datamenu, nrChannels);
+	ShaderFill * grid_material_menu = new ShaderFill(vshader, fshader, generated_texture_menu);
+
 
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
 
 	Model *m;
-
-	m = new Model(Vector3f(0, 0, 0), grid_material);  // Floors
-	m->AddSphere(0, 0, 0, 1, 10, 10);
+	// Init Sun
+	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
+	m->AddSphere(0, 0, 0, 5, 10, 10);
 	m->AllocateBuffers();
 	Add(m);
 
+	// Init Menu
+	m = new Model(Vector3f(0, 0, 0), grid_material_menu);
+	m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
+
+	//m->AddSphere(0, 0, 0, 1, 10, 10);
+	m->AllocateBuffers();
+	m->Pos = Vector3f(0, 0, 8);
+	menu.menuModel = m;
+
+	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
+	m->AddSphere(0, 0, 0, 1, 10, 10);
+	m->AllocateBuffers();
+	m->Pos = Vector3f(2.3, 0, 8);
+	menu.menuSphere = m;
 
 	// ===================================================
-	// skybox 
+	// Init skybox 
 	// ===================================================
 	GLuint    vshader_sky = CreateShader(GL_VERTEX_SHADER, "../../../Shader/skybox.vs");
 	GLuint    fshader_sky = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/skybox.fs");
@@ -229,12 +248,6 @@ void Scene::Init(int includeIntensiveGPUobject)
 		"../../../Src/ame_starfield/starfield_lf.tga",
 		"../../../Src/ame_starfield/starfield_rt.tga",
 	};
-	//"../../../Src/skybox/top.jpg",
-//"../../../Src/skybox/bottom.jpg",
-//"../../../Src/skybox/front.jpg",
-//"../../../Src/skybox/back.jpg",
-//"../../../Src/skybox/left.jpg",
-//"../../../Src/skybox/right.jpg"
 
 	ShaderFill *grid_materialsky[6];
 	TextureBuffer * generated_texturesky;
@@ -245,24 +258,13 @@ void Scene::Init(int includeIntensiveGPUobject)
 		grid_materialsky[i] = new ShaderFill(vshader, fshader, generated_texturesky);
 
 		Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[i]);
-		m_sky->AddPlane(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, i);
+		m_sky->AddPlane(-100.0f, -100.0f, -100.0f, 100.0f, 100.0f, 100.0f, i);
 		m_sky->AllocateBuffers();
 		AddSky(m_sky);
 	}
-	//data = stbi_load(faces.at(0).c_str(), &width, &height, &nrChannels, 0);
-	//generated_texturesky = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-	//grid_materialsky[0] = new ShaderFill(vshader, fshader, generated_texturesky);
-	//Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[0]);
-	//m_sky->AddSolidSkyBox(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, 0xFFFFFFFF);
-	////m_sky->AddPlane(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f, i);
-	//m_sky->AllocateBuffers();
-	//Add(m_sky);
-	//TextureBuffer * generated_texturesky = new TextureBuffer(SkyBox.cubemapTexture);
-	//ShaderFill * grid_materialsky = new ShaderFill(vshader, fshader, generated_texturesky);
 
 	glDeleteShader(vshader_sky);
 	glDeleteShader(fshader_sky);
-
 
 }
 
@@ -280,13 +282,14 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 
 
 	// draw skybox
-	//view = glm::mat4(glm::mat3(view)); // remove translation from the view matrix
-	//glDepthMask(GL_FALSE);
-	//Models[numModels - 1]->Render(view, proj, true);
-	//glDepthMask(GL_TRUE);
+	// 下面内容的显示需要无视位移
 
+	Matrix4f viewnew(view.M[0][0], view.M[0][1], view.M[0][2], view.M[1][0], view.M[1][1], view.M[1][2], view.M[2][0], view.M[2][1], view.M[2][2]);
+
+	menu.menuSphere->Render(viewnew, proj, false);
+	menu.menuModel->Render(viewnew, proj, false);
 	for (int i = 0; i < numSkyModels; ++i)
-		SkyBoxModels[i]->Render(view, proj, false);
+		SkyBoxModels[i]->Render(viewnew, proj, false);
 }
 
 
@@ -313,11 +316,12 @@ void Scene::ChangeShader(int i)
 	}
 	unsigned char *data = stbi_load(load, &width, &height, &nrChannels, 0);
 	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-	Models[0]->Fill->changTecture(generated_texture);
+	menu.menuSphere->Fill->changTecture(generated_texture);
 }
 
 
 void Scene::ChangeColor()
 {
-	Models[0]->setColor(rand());
+	menu.menuSphere->setColor(rand());
 }
+
