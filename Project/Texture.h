@@ -12,7 +12,7 @@ public:
 		{
 			for (int j = 0; j < height; j++)
 			{
-				float noise = stb_perlin_noise3(float(i) / width * 10, float(j) / height * 10, 0, 0, 0, 0) * 255;
+				float noise = stb_perlin_noise3(float(i) / width * 10, float(j) / height * 10, 0, 0, 0, 0) * 128 + 128;
 				texture[i*width + j] = noise;
 			}
 		}
