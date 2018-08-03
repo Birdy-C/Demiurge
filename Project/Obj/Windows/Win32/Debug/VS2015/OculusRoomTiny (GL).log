@@ -30,11 +30,24 @@ e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(815): warn
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(816): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(68): warning C4101: “infoLog”: 未引用的局部变量
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(67): warning C4101: “success”: 未引用的局部变量
-..\..\..\Scene.cpp(233): warning C4305: “参数”: 从“double”到“float”截断
-..\..\..\Scene.cpp(195): warning C4100: “includeIntensiveGPUobject”: 未引用的形参
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(122): warning C4701: 使用了可能未初始化的局部变量“format”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(317): warning C4701: 使用了可能未初始化的局部变量“load”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(317): warning C4703: 使用了可能未初始化的本地指针变量“load”
+..\..\..\Scene.cpp(10): warning C4305: “初始化”: 从“double”到“float”截断
+..\..\..\Scene.cpp(305): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(307): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(314): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(323): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(264): warning C4100: “includeIntensiveGPUobject”: 未引用的形参
+..\..\..\Scene.cpp(271): warning C4101: “height”: 未引用的局部变量
+..\..\..\Scene.cpp(271): warning C4101: “nrChannels”: 未引用的局部变量
+..\..\..\Scene.cpp(271): warning C4101: “width”: 未引用的局部变量
+..\..\..\Scene.cpp(278): warning C4189: “grid_material_menu4”: 局部变量已初始化但不引用
+..\..\..\Scene.cpp(277): warning C4189: “grid_material_menu3”: 局部变量已初始化但不引用
+..\..\..\Scene.cpp(276): warning C4189: “grid_material_menu2”: 局部变量已初始化但不引用
+..\..\..\Scene.cpp(345): warning C4101: “generated_texturesky”: 未引用的局部变量
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(123): warning C4701: 使用了可能未初始化的局部变量“format”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(430): warning C4701: 使用了可能未初始化的局部变量“load”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(430): warning C4703: 使用了可能未初始化的本地指针变量“load”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(455): warning C4701: 使用了可能未初始化的局部变量“load”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(455): warning C4703: 使用了可能未初始化的本地指针变量“load”
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\win32_glapputil.h(122): warning C4701: 使用了可能未初始化的局部变量“format”
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).exe
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).pdb (Full PDB)

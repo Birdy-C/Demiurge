@@ -548,8 +548,8 @@ struct Model
 	Quatf           Rot;
 	Matrix4f        Mat;
 	int             numVertices, numIndices;
-	Vertex          Vertices[2000]; // Note fixed maximum
-	GLushort        Indices[2000];
+	Vertex          Vertices[3000]; // Note fixed maximum
+	GLushort        Indices[3000];
 	ShaderFill    * Fill;
 	VertexBuffer  * vertexBuffer;
 	IndexBuffer   * indexBuffer;
@@ -839,7 +839,7 @@ struct Model
 				float ttheta = theta * iTheta;
 				Vector3f result = center + Vector3f(0, 1, 0) * radius * sin(tphi)
 					+ Vector3f(1, 0, 0) *  radius * cos(tphi)*cos(ttheta) + Vector3f(0, 0, 1) * radius * cos(tphi) * sin(ttheta);
-				AddVertex(result, 0xFFFFFFF, float(iTheta) / theta_steps, float(iPhi) / phi_steps); //TODO
+				AddVertex(result, 0xFFFFFFF, float(iTheta) / theta_steps, 1 - float(iPhi) / phi_steps); //TODO
 			}
 		}
 

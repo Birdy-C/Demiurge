@@ -7,9 +7,10 @@
 #include "stb-master/stb_image.h"
 #include "Extras/OVR_Math.h"
 
-// ==============================================================
-// Place for skybox
-// ==============================================================
+float settedZ = 7.9;
+Vector3f PointPos[] = { Vector3f(0, 0, settedZ), Vector3f(0, 2, settedZ), Vector3f(0, 0, settedZ), Vector3f(0, -2, settedZ) };
+DWORD Color[] = { 0xFFFFFF,0xFF0000,0xFFFF00,0x00FF00,0x00FFFF };
+
 glm::mat4 OVR2glm(OVR::Matrix4f m)
 {
 	glm::mat4 T(
@@ -192,21 +193,90 @@ void Scene::Calculate()
 
 }
 
+//J = 0 L K I
+void Scene::Event(int i)
+{
+	switch (i)
+	{
+	case 0:
+		// 1 2 3
+		if (menu.status > 0 && menu.status <= 3)
+		{
+			menu.status = 0;
+		}
+		break;
+	case 1:
+		// 0
+		if (0 == menu.status)
+		{
+			menu.status = 1;
+			menu.pointer->Pos = PointPos[menu.status];
+		}
+		break;
+	case 2:
+		// 1 2 3
+		if (menu.status > 0 && menu.status <= 3)
+		{
+			menu.status++;
+			if (menu.status == 4)
+				menu.status = 1;
+			menu.pointer->Pos = PointPos[menu.status];
+		}
+		break;
+	case 3:
+		// 1 2 3
+		if (menu.status > 0 && menu.status <= 3)
+		{
+			menu.status--;
+			if (menu.status == 0)
+				menu.status = 3;
+			menu.pointer->Pos = PointPos[menu.status];
+		}
+		break;
+	case 4:
+		if (1 == menu.status)
+		{
+			menu.textureType++;
+			ChangeShader();
+		}
+		break;
+	case 5:
+		if (1 == menu.status)
+		{
+			menu.textureType--;
+			ChangeShader();
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+ShaderFill * Scene::generateShader(GLuint vertexShader, GLuint pixelShader, const char * path)
+{
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
+	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+	ShaderFill * grid_material = new ShaderFill(vertexShader, pixelShader, generated_texture);
+	return grid_material;
+}
+
 void Scene::Init(int includeIntensiveGPUobject)
 {
 	GLuint    vshader = CreateShader(GL_VERTEX_SHADER, "../../../Shader/normal.vs");
 	GLuint    fshader = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/normal.fs");
 
+	// 我绝对要给写这个的差评……
 	// Make textures
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load("../../../Src/2k_sun.jpg", &width, &height, &nrChannels, 0);
-	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-	ShaderFill * grid_material_sun = new ShaderFill(vshader, fshader, generated_texture);
 
-	unsigned char *datamenu = stbi_load("../../../Src/menu.png", &width, &height, &nrChannels, 0);
-	TextureBuffer * generated_texture_menu = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)datamenu, nrChannels);
-	ShaderFill * grid_material_menu = new ShaderFill(vshader, fshader, generated_texture_menu);
-
+	ShaderFill * grid_material_sun = generateShader(vshader, fshader, "../../../Src/2k_uranus.jpg");
+	ShaderFill * grid_material_menu0 = generateShader(vshader, fshader, "../../../Src/menu0.png");
+	ShaderFill * grid_material_menu1 = generateShader(vshader, fshader, "../../../Src/menu1.png");
+	ShaderFill * grid_material_menu2 = generateShader(vshader, fshader, "../../../Src/menu2.png");
+	ShaderFill * grid_material_menu3 = generateShader(vshader, fshader, "../../../Src/menu3.png");
+	ShaderFill * grid_material_menu4 = generateShader(vshader, fshader, "../../../Src/menu4.png");
+	ShaderFill * grid_material_menuT = generateShader(vshader, fshader, "../../../Src/menu/texture0.png");
 
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
@@ -214,24 +284,46 @@ void Scene::Init(int includeIntensiveGPUobject)
 	Model *m;
 	// Init Sun
 	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
-	m->AddSphere(0, 0, 0, 5, 10, 10);
+	m->AddSphere(0, 0, 0, 5, 20, 20);
 	m->AllocateBuffers();
 	Add(m);
 
 	// Init Menu
-	m = new Model(Vector3f(0, 0, 0), grid_material_menu);
+	m = new Model(Vector3f(0, 0, 0), grid_material_menu0);
 	m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
-
-	//m->AddSphere(0, 0, 0, 1, 10, 10);
 	m->AllocateBuffers();
 	m->Pos = Vector3f(0, 0, 8);
-	menu.menuModel = m;
+	menu.menuModel[0] = m;
+
+	m = new Model(Vector3f(0, 0, 0), grid_material_menu1);
+	m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
+	m->AllocateBuffers();
+	m->Pos = Vector3f(0, 0, 8);
+	menu.menuModel[1] = m;
+
+	m = new Model(Vector3f(0, 0, 0), grid_material_menuT);
+	m->AddPlane(-0.4, -0.3, 0, 0.4, 0.3, 0, 5);
+	m->AllocateBuffers();
+	m->Pos = Vector3f(0, 0.5, 7.9);
+	menu.Texture = m;
+
+
+	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
+	m->AddSphere(0, 0, 0, 0.5, 10, 10);
+	m->AllocateBuffers();
+	m->Pos = Vector3f(2.3, 0, 8);
+	menu.pointer = m;
+
+
+	// Init Model
 
 	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
 	m->AddSphere(0, 0, 0, 1, 10, 10);
 	m->AllocateBuffers();
 	m->Pos = Vector3f(2.3, 0, 8);
 	menu.menuSphere = m;
+
+
 
 	// ===================================================
 	// Init skybox 
@@ -253,9 +345,8 @@ void Scene::Init(int includeIntensiveGPUobject)
 	TextureBuffer * generated_texturesky;
 	for (int i = 0; i < 6; i++)
 	{
-		data = stbi_load(faces.at(i).c_str(), &width, &height, &nrChannels, 0);
-		generated_texturesky = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-		grid_materialsky[i] = new ShaderFill(vshader, fshader, generated_texturesky);
+
+		grid_materialsky[i] = generateShader(vshader, fshader, faces.at(i).c_str());
 
 		Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[i]);
 		m_sky->AddPlane(-100.0f, -100.0f, -100.0f, 100.0f, 100.0f, 100.0f, i);
@@ -268,6 +359,21 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 }
 
+void Scene::drawMenu(Matrix4f viewnew, Matrix4f proj)
+{
+	// draw menu
+	if (0 == menu.status)
+	{
+		menu.menuModel[0]->Render(viewnew, proj, false);
+	}
+	else if (menu.status <= 3)
+	{
+		menu.menuSphere->Render(viewnew, proj, false);
+		menu.menuModel[1]->Render(viewnew, proj, false);
+		menu.pointer->Render(viewnew, proj, false);
+		menu.Texture->Render(viewnew, proj, false);
+	}
+}
 
 void Scene::Render(Matrix4f view, Matrix4f proj)
 {
@@ -281,42 +387,75 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 		Models[i]->Render(view, proj, false);
 
 
-	// draw skybox
-	// 下面内容的显示需要无视位移
+	//// 下面内容的显示需要无视位移
 
 	Matrix4f viewnew(view.M[0][0], view.M[0][1], view.M[0][2], view.M[1][0], view.M[1][1], view.M[1][2], view.M[2][0], view.M[2][1], view.M[2][2]);
 
-	menu.menuSphere->Render(viewnew, proj, false);
-	menu.menuModel->Render(viewnew, proj, false);
+	//drawMenu(viewnew, proj);
+
+	// draw skybox
 	for (int i = 0; i < numSkyModels; ++i)
 		SkyBoxModels[i]->Render(viewnew, proj, false);
 }
 
 
-void Scene::ChangeShader(int i)
+
+
+void Scene::ChangeShader()
 {
-	int width, height, nrChannels;
-	char *load;
-	switch (i % 6)
 	{
-	case 0:
-		load = "../../../Src/2k_sun.jpg"; break;
-	case 1:
-		load = "../../../Src/2k_earth_daymap.jpg"; break;
-	case 2:
-		load = "../../../Src/2k_eris_fictional.jpg"; break;
-	case 3:
-		load = "../../../Src/2k_haumea_fictional.jpg"; break;
-	case 4:
-		load = "../../../Src/2k_jupiter.jpg"; break;
-	case 5:
-		load = "../../../Src/2k_mars.jpg"; break;
-	default:
-		break;
+		int width, height, nrChannels;
+		char *load;
+		while (menu.textureType < 0)
+		{
+			menu.textureType += 6;
+		}
+		switch (menu.textureType % 6)
+		{
+		case 0:
+			load = "../../../Src/2k_sun.jpg"; break;
+		case 1:
+			load = "../../../Src/2k_earth_daymap.jpg"; break;
+		case 2:
+			load = "../../../Src/2k_eris_fictional.jpg"; break;
+		case 3:
+			load = "../../../Src/2k_haumea_fictional.jpg"; break;
+		case 4:
+			load = "../../../Src/2k_jupiter.jpg"; break;
+		case 5:
+			load = "../../../Src/2k_mars.jpg"; break;
+		default:
+			break;
+		}
+		unsigned char *data = stbi_load(load, &width, &height, &nrChannels, 0);
+		TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+		menu.menuSphere->Fill->changTecture(generated_texture);
 	}
-	unsigned char *data = stbi_load(load, &width, &height, &nrChannels, 0);
-	TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-	menu.menuSphere->Fill->changTecture(generated_texture);
+
+	{
+		int width, height, nrChannels;
+		char *load;
+		switch (menu.textureType % 6)
+		{
+		case 0:
+			load = "../../../Src/menu/texture0.png"; break;
+		case 1:
+			load = "../../../Src/menu/texture1.png"; break;
+		case 2:
+			load = "../../../Src/menu/texture2.png"; break;
+		case 3:
+			load = "../../../Src/menu/texture3.png"; break;
+		case 4:
+			load = "../../../Src/menu/texture4.png"; break;
+		case 5:
+			load = "../../../Src/menu/texture5.png"; break;
+		default:
+			break;
+		}
+		unsigned char *data = stbi_load(load, &width, &height, &nrChannels, 0);
+		TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+		menu.Texture->Fill->changTecture(generated_texture);
+	}
 }
 
 
