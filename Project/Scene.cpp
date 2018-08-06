@@ -231,6 +231,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 	ShaderFill * grid_material_sun = generateShader(vshader, fshader, "../../../Src/2k_sun.jpg");
 	ShaderFill * grid_material_earth = generateShader(vshader, fshader, "../../../Src/2k_earth_daymap.jpg");
+
 	ShaderFill * grid_material_menu0 = generateShader(vshader, fshader, "../../../Src/menu0.png");
 	ShaderFill * grid_material_menu1 = generateShader(vshader, fshader, "../../../Src/menu1.png");
 	ShaderFill * grid_material_menu2 = generateShader(vshader, fshader, "../../../Src/menu2.png");
@@ -238,6 +239,10 @@ void Scene::Init(int includeIntensiveGPUobject)
 	ShaderFill * grid_material_menuT = generateShader(vshader, fshader, "../../../Src/menu/texture0.png");
 	ShaderFill * grid_material_pointer = generateShader(vshader, fshader, "../../../Src/pointer.png");
 	ShaderFill * grid_material_slider = generateShader(vshader, fshader, "../../../Src/slider.png");
+	ShaderFill *grid_material_color = generateShader(vshader, fshader, "../../../Src/color.bmp");
+	
+	ShaderFill * grid_material_Texture = generateShader(vshader, fshader, "../../../Src/2k_sun.jpg");
+
 
 	Model *m;
 
@@ -282,10 +287,11 @@ void Scene::Init(int includeIntensiveGPUobject)
 		m->Pos = Vector3f(0, 0, 8);
 		menu.menuModel[3] = m;
 
+		// Texture
 		m = new Model(Vector3f(0, 0, 0), grid_material_menuT);
-		m->AddPlane(-0.5, -0.25, 0, 0.5, 0.25, 0, 5);
+		m->AddPlane(-0.5, -0.3, 0, 0.5, 0.3, 0, 5);
 		m->AllocateBuffers();
-		m->Pos = Vector3f(0.42, 0.64, 7.9);
+		m->Pos = Vector3f(0.42, 0.7, 7.9);
 		menu.Texture = m;
 
 		// pointer
@@ -296,7 +302,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 		menu.pointer = m;
 
 		// Color
-		m = new Model(Vector3f(0, 0, 0), grid_material_pointer);
+		m = new Model(Vector3f(0, 0, 0), grid_material_color);
 		m->AddPlane(-0.5, -0.4, 0, 0.5, 0.4, 0, 5);
 		m->AllocateBuffers();
 		m->Pos = Vector3f(-3.2, 0.8, 7.9);
@@ -316,10 +322,10 @@ void Scene::Init(int includeIntensiveGPUobject)
 		menu.Slider[1] = m;
 
 		// Init Model
-		m = new Model(Vector3f(0, 0, 0), grid_material_sun);
+		m = new Model(Vector3f(0, 0, 0), grid_material_Texture);
 		m->AddSphere(0, 0, 0, 1, 10, 10);
 		m->AllocateBuffers();
-		m->Pos = Vector3f(2.3, 0, 8);
+		m->Pos = Vector3f(3.7, 0.119, 8);
 		menu.menuSphere = m;
 	}
 
@@ -376,6 +382,10 @@ void Scene::Init(int includeIntensiveGPUobject)
 		glDeleteShader(fshader_sky);
 
 	}
+
+
+	// 为了同步
+	ChangeTexture();
 
 }
 

@@ -11,6 +11,7 @@
 
 const float settedZ = 7.9;
 DWORD Color[] = { 0xFFFFFF,0xFF0000,0xFFFF00,0x00FF00,0x00FFFF };
+int SEGMENT[2][5] = { { 8,10,12,15,20}, {3,5,8,10,12} };
 
 Vector3f PointPos[] = {
 	Vector3f(0, 0, settedZ), Vector3f(0.4, 1.4, settedZ), Vector3f(0.4, -0.377, settedZ),Vector3f(0, 0, settedZ),
@@ -30,25 +31,44 @@ Vector3f PointPos[] = {
 // ================================
 void Scene::ChangeTexture()
 {
+	// 设置总的Texture
 	{
 		int width, height, nrChannels;
 		char *load;
 		while (menu.textureType < 0)
 		{
-			menu.textureType += 6;
+			menu.textureType += 15;
 		}
-		menu.textureType %= 6;
+		menu.textureType %= 15;
 
 		switch (menu.textureType)
 		{
 		case 2:
-			load = "../../../Src/2k_eris_fictional.jpg"; break;
+			load = "../../../Src/2k_earth_daymap.jpg"; break;
 		case 3:
-			load = "../../../Src/2k_haumea_fictional.jpg"; break;
+			load = "../../../Src/2k_mercury.jpg"; break;
 		case 4:
-			load = "../../../Src/2k_jupiter.jpg"; break;
+			load = "../../../Src/2k_venus_surface.jpg"; break;
 		case 5:
+			load = "../../../Src/2k_venus_atmosphere.jpg"; break;
+		case 6:
 			load = "../../../Src/2k_mars.jpg"; break;
+		case 7:
+			load = "../../../Src/2k_jupiter.jpg"; break;
+		case 8:
+			load = "../../../Src/2k_saturn.jpg"; break;
+		case 9:
+			load = "../../../Src/2k_uranus.jpg"; break;
+		case 10:
+			load = "../../../Src/2k_neptune.jpg"; break;
+		case 11:
+			load = "../../../Src/2k_ceres_fictional.jpg"; break;
+		case 12:
+			load = "../../../Src/2k_haumea_fictional.jpg"; break;
+		case 13:
+			load = "../../../Src/2k_makemake_fictional.jpg"; break;
+		case 14:
+			load = "../../../Src/2k_eris_fictional.jpg"; break;
 		default:
 			break;
 		}
@@ -56,40 +76,44 @@ void Scene::ChangeTexture()
 		if (menu.textureType > 1)
 		{
 			data = stbi_load(load, &width, &height, &nrChannels, 0);
+			TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+			menu.menuSphere->Fill->changTecture(generated_texture);
 		}
 		else if (menu.textureType == 0)
 		{
-			data = (unsigned char *)Texture::generateTecture(200, 200, (Color[menu.color]), true);
+			data = (unsigned char *)Texture::generateTecture(200, 200, (Color[menu.color]), false, SEGMENT[0][menu.segment], menu.seed);
+			TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(200, 200), 4, (unsigned char *)data, 3);
+			menu.menuSphere->Fill->changTecture(generated_texture);
+
+
+			// 不知道为什么这里直接读纯色的会出错 后来改成了1 * 1
+			//data = stbi_load("../../../test.bmp", &width, &height, &nrChannels, 0);
+			//generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+			//menu.colorChoose->Fill->changTecture(generated_texture);
+
+			data = Texture::generateTecturePure(1, 1, (Color[menu.color]));
+			generated_texture = new TextureBuffer(true, Sizei(1, 1), 4, data, 3);
+			menu.colorChoose->Fill->changTecture(generated_texture);
+
 		}
 		else
 		{
-			data = (unsigned char *)Texture::generateTecture(200, 200, (Color[menu.color]), true);
+			data = (unsigned char *)Texture::generateTecture(200, 200, (Color[menu.color]), true, SEGMENT[1][menu.segment], menu.seed);
+			TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(200, 200), 4, (unsigned char *)data, 3);
+			menu.menuSphere->Fill->changTecture(generated_texture);
+
+			data = Texture::generateTecturePure(1, 1, (Color[menu.color]));
+			generated_texture = new TextureBuffer(true, Sizei(1, 1), 4, data, 3);
+			menu.colorChoose->Fill->changTecture(generated_texture);
+
 		}
-		TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-		menu.menuSphere->Fill->changTecture(generated_texture);
 	}
 
+	// 设置Texture对应的显示
 	{
 		int width, height, nrChannels;
-		char *load;
-		switch (menu.textureType)
-		{
-		case 0:
-			load = "../../../Src/menu/texture0.png"; break;
-		case 1:
-			load = "../../../Src/menu/texture1.png"; break;
-		case 2:
-			load = "../../../Src/menu/texture2.png"; break;
-		case 3:
-			load = "../../../Src/menu/texture3.png"; break;
-		case 4:
-			load = "../../../Src/menu/texture4.png"; break;
-		case 5:
-			load = "../../../Src/menu/texture5.png"; break;
-		default:
-			break;
-		}
-		unsigned char *data = stbi_load(load, &width, &height, &nrChannels, 0);
+		std::string path = "../../../Src/menu/texture" + std::to_string(menu.textureType) + ".png";
+		unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 		TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
 		menu.Texture->Fill->changTecture(generated_texture);
 	}
@@ -199,13 +223,13 @@ void Scene::menuEvent(int i)
 				menu.textureType = menu.textureType++;
 				break;
 			case 4:
-				menu.color = (menu.color++) % 5;
+				menu.color = (menu.color + 1) % 5;
 				break;
 			case 5:
-				menu.segment = (menu.segment++) % 5;
+				menu.segment = (menu.segment + 1) % 5;
 				break;
 			case 6:
-				menu.segment = (menu.segment++) % 5;
+				menu.seed = (menu.seed++) % 5;
 				break;
 			default:
 				break;
@@ -216,10 +240,10 @@ void Scene::menuEvent(int i)
 			switch (menu.pointerstatus)
 			{
 			case 4:
-				menu.speed = (menu.speed++) % 5;
+				menu.speed = (menu.speed + 1) % 5;
 				break;
 			case 5:
-				menu.size = (menu.size++) % 5;
+				menu.size = (menu.size + 1) % 5;
 				break;
 			default:
 				break;
@@ -231,21 +255,22 @@ void Scene::menuEvent(int i)
 		}
 		break;
 	case 5: // O
-		switch (menu.pointerstatus)
+		switch (menu.mainstatus)
 		{
 		case 1:
 			switch (menu.pointerstatus)
 			{
+			case 1:
 				menu.textureType = menu.textureType--;
 				break;
 			case 4:
-				menu.color = (menu.color--) % 5;
+				menu.color = (menu.color + 4) % 5;
 				break;
 			case 5:
-				menu.segment = (menu.segment--) % 5;
+				menu.segment = (menu.segment + 4) % 5;
 				break;
 			case 6:
-				menu.segment = (menu.segment--) % 5;
+				menu.seed = (menu.seed + 4) % 5;
 				break;
 			default:
 				break;
@@ -256,10 +281,10 @@ void Scene::menuEvent(int i)
 			switch (menu.pointerstatus)
 			{
 			case 4:
-				menu.speed = (menu.speed--) % 5;
+				menu.speed = (menu.speed + 4) % 5;
 				break;
 			case 5:
-				menu.size = (menu.size--) % 5;
+				menu.size = (menu.size + 4) % 5;
 				break;
 			default:
 				break;
@@ -275,6 +300,8 @@ void Scene::menuEvent(int i)
 	menu.pointer->Pos = PointPos[menu.pointerstatus];
 
 }
+
+
 
 //J = 0 L K I
 void Scene::Event(int i)
@@ -317,6 +344,7 @@ void Scene::Event(int i)
 }
 
 
+
 void Scene::drawMenu(Matrix4f viewnew, Matrix4f proj)
 {
 	// draw menu
@@ -348,7 +376,8 @@ void Scene::drawMenu(Matrix4f viewnew, Matrix4f proj)
 		menu.pointer->Render(viewnew, proj, false);
 
 	menu.Texture->Render(viewnew, proj, false);
-	menu.colorChoose->Render(viewnew, proj, false);
+	if (menu.mainstatus == 1 && menu.textureType < 2)
+		menu.colorChoose->Render(viewnew, proj, false);
 }
 
 //void Scene::recalculateEdit()
