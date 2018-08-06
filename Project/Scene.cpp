@@ -6,9 +6,16 @@
 #include "shader.h"
 #include "stb-master/stb_image.h"
 #include "Extras/OVR_Math.h"
+#include <string>     // std::string, std::to_string
 
 float settedZ = 7.9;
 Vector3f PointPos[] = { Vector3f(0, 0, settedZ), Vector3f(0, 2, settedZ), Vector3f(0, 0, settedZ), Vector3f(0, -2, settedZ) };
+Vector3f SliderPos[3][3] = {
+	Vector3f(3, 2, settedZ),Vector3f(3, 2, settedZ),Vector3f(3, 2, settedZ),
+	Vector3f(3, 0, settedZ) ,Vector3f(3, 0, settedZ) ,Vector3f(3, 0, settedZ),
+	Vector3f(3, -2, settedZ) ,Vector3f(3, -2, settedZ),Vector3f(3, -2, settedZ)
+};
+
 DWORD Color[] = { 0xFFFFFF,0xFF0000,0xFFFF00,0x00FF00,0x00FFFF };
 
 glm::mat4 OVR2glm(OVR::Matrix4f m)
@@ -274,9 +281,8 @@ void Scene::Init(int includeIntensiveGPUobject)
 	ShaderFill * grid_material_menu3 = generateShader(vshader, fshader, "../../../Src/menu3.png");
 	ShaderFill * grid_material_menu4 = generateShader(vshader, fshader, "../../../Src/menu4.png");
 	ShaderFill * grid_material_menuT = generateShader(vshader, fshader, "../../../Src/menu/texture0.png");
+	ShaderFill * grid_material_pointer = generateShader(vshader, fshader, "../../../Src/pointer.png");
 
-	glDeleteShader(vshader);
-	glDeleteShader(fshader);
 
 	Model *m;
 
@@ -284,7 +290,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 	p = new Planet(Vector3f(0, 0, 0), grid_material_sun, 3, 2, Vector3f(0, 0, 0));
 	plants.push_back(p);
 
-	p = new Planet(Vector3f(10, 0, 0), grid_material_earth, 1, 2, Vector3f(0, 0,10));
+	p = new Planet(Vector3f(10, 0, 0), grid_material_earth, 1, 2, Vector3f(0, 0, 10));
 	plants.push_back(p);
 
 	// Init Sun
@@ -294,73 +300,93 @@ void Scene::Init(int includeIntensiveGPUobject)
 	//Add(m);
 
 	// Init Menu
-	m = new Model(Vector3f(0, 0, 0), grid_material_menu0);
-	m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
-	m->AllocateBuffers();
-	m->Pos = Vector3f(0, 0, 8);
-	menu.menuModel[0] = m;
-
-	m = new Model(Vector3f(0, 0, 0), grid_material_menu1);
-	m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
-	m->AllocateBuffers();
-	m->Pos = Vector3f(0, 0, 8);
-	menu.menuModel[1] = m;
-
-	m = new Model(Vector3f(0, 0, 0), grid_material_menuT);
-	m->AddPlane(-0.4, -0.3, 0, 0.4, 0.3, 0, 5);
-	m->AllocateBuffers();
-	m->Pos = Vector3f(0, 0.5, 7.9);
-	menu.Texture = m;
-
-
-	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
-	m->AddPlane(-0.4, -0.3, 0, 0.4, 0.3, 0, 5);
-	m->AllocateBuffers();
-	m->Pos = Vector3f(2.3, 0, 8);
-	menu.pointer = m;
-
-
-	// Init Model
-
-	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
-	m->AddSphere(0, 0, 0, 1, 10, 10);
-	m->AllocateBuffers();
-	m->Pos = Vector3f(2.3, 0, 8);
-	menu.menuSphere = m;
-
-
-
-	// ===================================================
-	// Init skybox 
-	// ===================================================
-	GLuint    vshader_sky = CreateShader(GL_VERTEX_SHADER, "../../../Shader/skybox.vs");
-	GLuint    fshader_sky = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/skybox.fs");
-
-	std::vector<std::string> faces
 	{
-		"../../../Src/ame_starfield/starfield_up.tga",
-		"../../../Src/ame_starfield/starfield_dn.tga",
-		"../../../Src/ame_starfield/starfield_ft.tga",
-		"../../../Src/ame_starfield/starfield_bk.tga",
-		"../../../Src/ame_starfield/starfield_lf.tga",
-		"../../../Src/ame_starfield/starfield_rt.tga",
-	};
+		m = new Model(Vector3f(0, 0, 0), grid_material_menu0);
+		m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(0, 0, 8);
+		menu.menuModel[0] = m;
 
-	ShaderFill *grid_materialsky[6];
-	TextureBuffer * generated_texturesky;
-	for (int i = 0; i < 6; i++)
-	{
+		m = new Model(Vector3f(0, 0, 0), grid_material_menu1);
+		m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(0, 0, 8);
+		menu.menuModel[1] = m;
 
-		grid_materialsky[i] = generateShader(vshader, fshader, faces.at(i).c_str());
+		m = new Model(Vector3f(0, 0, 0), grid_material_menuT);
+		m->AddPlane(-0.4, -0.3, 0, 0.4, 0.3, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(0, 0.5, 7.9);
+		menu.Texture = m;
 
-		Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[i]);
-		m_sky->AddPlane(-150.0f, -150.0f, -150.0f, 150.0f, 150.0f, 150.0f, i);
-		m_sky->AllocateBuffers();
-		AddSky(m_sky);
+
+		m = new Model(Vector3f(0, 0, 0), grid_material_pointer);
+		m->AddPlane(-0.4, -0.1, 0, 0.4, 0.1, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(2.3, 0, 8);
+		menu.pointer = m;
+
+		// Init Model
+		m = new Model(Vector3f(0, 0, 0), grid_material_sun);
+		m->AddSphere(0, 0, 0, 1, 10, 10);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(2.3, 0, 8);
+		menu.menuSphere = m;
 	}
 
-	glDeleteShader(vshader_sky);
-	glDeleteShader(fshader_sky);
+
+	// Init Help
+
+	{
+		numModels = 6;
+		ShaderFill * material;
+		for (int i = 0; i < numModels; i++)
+		{
+			std::string path = "../../../Src/Help/A" + std::to_string(i) + ".png";
+			material = generateShader(vshader, fshader, path.c_str());
+			m = new Model(Vector3f(0, 0, 0), material);
+			m->AddPlane(-60, -40, 0, 60, 40, 0, 5);
+			m->AllocateBuffers();
+			m->Pos = Vector3f(0, 0, 149);
+			Models[i] = m;
+		}
+	}
+
+
+	glDeleteShader(vshader);
+	glDeleteShader(fshader);
+
+	// Init skybox 
+	{
+		GLuint    vshader_sky = CreateShader(GL_VERTEX_SHADER, "../../../Shader/skybox.vs");
+		GLuint    fshader_sky = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/skybox.fs");
+
+		std::vector<std::string> faces
+		{
+			"../../../Src/ame_starfield/starfield_up.tga",
+			"../../../Src/ame_starfield/starfield_dn.tga",
+			"../../../Src/ame_starfield/starfield_ft.tga",
+			"../../../Src/ame_starfield/starfield_bk.tga",
+			"../../../Src/ame_starfield/starfield_lf.tga",
+			"../../../Src/ame_starfield/starfield_rt.tga",
+		};
+
+		ShaderFill *grid_materialsky[6];
+		TextureBuffer * generated_texturesky;
+		for (int i = 0; i < 6; i++)
+		{
+
+			grid_materialsky[i] = generateShader(vshader, fshader, faces.at(i).c_str());
+
+			Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[i]);
+			m_sky->AddPlane(-150.0f, -150.0f, -150.0f, 150.0f, 150.0f, 150.0f, i);
+			m_sky->AllocateBuffers();
+			AddSky(m_sky);
+		}
+		glDeleteShader(vshader_sky);
+		glDeleteShader(fshader_sky);
+
+	}
 
 }
 
@@ -388,8 +414,8 @@ void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//设置S轴拉伸方式为重复
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//设置T轴拉伸方式为重复
 
-	for (int i = 0; i < numModels; ++i)
-		Models[i]->Render(view, proj, false);
+	//for (int i = 0; i < numModels; ++i)
+	//	Models[i]->Render(view, proj, false);
 
 	for (auto it = plants.begin(); it != plants.end(); it++)
 		(*it)->Render(view, proj, pos);
@@ -404,6 +430,22 @@ void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos)
 	for (int i = 0; i < numSkyModels; ++i)
 		SkyBoxModels[i]->Render(viewnew, proj, false);
 
+	drawHelp(viewnew, proj);
+
+}
+
+void Scene::drawHelp(Matrix4f view, Matrix4f proj)
+{
+	static int timer = 0;
+	static int index = 0;
+	timer++;
+
+	if (timer > 200)
+	{
+		timer -= 200;
+		index = (index + 1) % numModels;
+	}
+	Models[index]->Render(view, proj, false);
 
 }
 
