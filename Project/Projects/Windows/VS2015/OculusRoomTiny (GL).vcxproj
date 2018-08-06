@@ -88,7 +88,8 @@
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(ProjectDir)..\..\..\Obj\Windows\$(Platform)\$(Configuration)\VS2015\</IntDir>
     <OutDir>$(ProjectDir)..\..\..\Bin\Windows\$(Platform)\$(Configuration)\VS2015\</OutDir>
-    <IncludePath>E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project;$(IncludePath)</IncludePath>
+    <IncludePath>E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\FMOD\api\studio\inc;E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\FMOD\api\lowlevel\inc;E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\FMOD\api\fsbank\inc;E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\FMOD\api\studio\lib;E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\FMOD\api\lowlevel\lib;E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\FMOD\api\fsbank\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -234,14 +235,14 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>$(OVRSDKROOT)LibOVR/Include/;$(OVRSDKROOT)LibOVRKernel/Src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Administrator\Desktop\FMOD\api\studio\inc;C:\Users\Administrator\Desktop\FMOD\api\lowlevel\inc;C:\Users\Administrator\Desktop\FMOD\api\fsbank\inc;$(OVRSDKROOT)LibOVR/Include/;$(OVRSDKROOT)LibOVRKernel/Src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Manifest>
       <EnableDPIAwareness>PerMonitorHighDPIAware</EnableDPIAwareness>
     </Manifest>
     <Link>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
-      <AdditionalDependencies>$(OVRSDKROOT)LibOVR/Lib/Windows/$(Platform)/$(Configuration)/VS2015/LibOVR.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fsbank_vc.lib;fsbank64_vc.lib;fmod_vc.lib;fmod64_vc.lib;fmodL_vc.lib;fmodL64_vc.lib;$(OVRSDKROOT)LibOVR/Lib/Windows/$(Platform)/$(Configuration)/VS2015/LibOVR.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
