@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE.cpp" />
     <ClCompile Include="..\..\..\main.cpp" />
     <ClCompile Include="..\..\..\Scene.cpp" />
+    <ClCompile Include="..\..\..\SceneUI.cpp" />
     <ClCompile Include="..\..\..\stb.cpp" />
   </ItemGroup>
   <ItemGroup>

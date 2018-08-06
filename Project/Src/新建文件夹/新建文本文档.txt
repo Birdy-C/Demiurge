@@ -1,0 +1,17 @@
+		switch (menu.textureType % 6)
+		{
+		case 0:
+			load = "../../../Src/2k_sun.jpg"; break;
+		case 1:
+			load = "../../../Src/2k_earth_daymap.jpg"; break;
+		case 2:
+			load = "../../../Src/2k_eris_fictional.jpg"; break;
+		case 3:
+			load = "../../../Src/2k_haumea_fictional.jpg"; break;
+		case 4:
+			load = "../../../Src/2k_jupiter.jpg"; break;
+		case 5:
+			load = "../../../Src/2k_mars.jpg"; break;
+		default:
+			break;
+		}

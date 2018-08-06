@@ -8,15 +8,6 @@
 #include "Extras/OVR_Math.h"
 #include <string>     // std::string, std::to_string
 
-float settedZ = 7.9;
-Vector3f PointPos[] = { Vector3f(0, 0, settedZ), Vector3f(0, 2, settedZ), Vector3f(0, 0, settedZ), Vector3f(0, -2, settedZ) };
-Vector3f SliderPos[3][3] = {
-	Vector3f(3, 2, settedZ),Vector3f(3, 2, settedZ),Vector3f(3, 2, settedZ),
-	Vector3f(3, 0, settedZ) ,Vector3f(3, 0, settedZ) ,Vector3f(3, 0, settedZ),
-	Vector3f(3, -2, settedZ) ,Vector3f(3, -2, settedZ),Vector3f(3, -2, settedZ)
-};
-
-DWORD Color[] = { 0xFFFFFF,0xFF0000,0xFFFF00,0x00FF00,0x00FFFF };
 
 glm::mat4 OVR2glm(OVR::Matrix4f m)
 {
@@ -192,69 +183,11 @@ GLuint Scene::CreateShader(GLenum type, const char* path)
 void Scene::Calculate()
 {
 
-	for (auto it = plants.begin(); it != plants.end(); it++)
+	for (auto it = planets.begin(); it != planets.end(); it++)
 		(*it)->calculate();
 
 }
 
-//J = 0 L K I
-void Scene::Event(int i)
-{
-	switch (i)
-	{
-	case 0:
-		// 1 2 3
-		if (menu.status > 0 && menu.status <= 3)
-		{
-			menu.status = 0;
-		}
-		break;
-	case 1:
-		// 0
-		if (0 == menu.status)
-		{
-			menu.status = 1;
-			menu.pointer->Pos = PointPos[menu.status];
-		}
-		break;
-	case 2:
-		// 1 2 3
-		if (menu.status > 0 && menu.status <= 3)
-		{
-			menu.status++;
-			if (menu.status == 4)
-				menu.status = 1;
-			menu.pointer->Pos = PointPos[menu.status];
-		}
-		break;
-	case 3:
-		// 1 2 3
-		if (menu.status > 0 && menu.status <= 3)
-		{
-			menu.status--;
-			if (menu.status == 0)
-				menu.status = 3;
-			menu.pointer->Pos = PointPos[menu.status];
-		}
-		break;
-	case 4:
-		if (1 == menu.status)
-		{
-			menu.textureType++;
-			ChangeShader();
-		}
-		break;
-	case 5:
-		if (1 == menu.status)
-		{
-			menu.textureType--;
-			ChangeShader();
-		}
-		break;
-	default:
-		break;
-	}
-}
 
 ShaderFill * Scene::generateShader(GLuint vertexShader, GLuint pixelShader, const char * path)
 {
@@ -264,6 +197,29 @@ ShaderFill * Scene::generateShader(GLuint vertexShader, GLuint pixelShader, cons
 	ShaderFill * grid_material = new ShaderFill(vertexShader, pixelShader, generated_texture);
 	return grid_material;
 }
+
+
+void Scene::drawHelp(Matrix4f view, Matrix4f proj)
+{
+	static int timer = 0;
+	static int index = 0;
+	timer++;
+
+	if (timer > 200)
+	{
+		timer -= 200;
+		index = (index + 1) % numModels;
+	}
+	Models[index]->Render(view, proj, false);
+
+}
+
+
+void Scene::ChangeColor()
+{
+	menu.menuSphere->setColor(rand());
+}
+
 
 void Scene::Init(int includeIntensiveGPUobject)
 {
@@ -279,19 +235,20 @@ void Scene::Init(int includeIntensiveGPUobject)
 	ShaderFill * grid_material_menu1 = generateShader(vshader, fshader, "../../../Src/menu1.png");
 	ShaderFill * grid_material_menu2 = generateShader(vshader, fshader, "../../../Src/menu2.png");
 	ShaderFill * grid_material_menu3 = generateShader(vshader, fshader, "../../../Src/menu3.png");
-	ShaderFill * grid_material_menu4 = generateShader(vshader, fshader, "../../../Src/menu4.png");
 	ShaderFill * grid_material_menuT = generateShader(vshader, fshader, "../../../Src/menu/texture0.png");
 	ShaderFill * grid_material_pointer = generateShader(vshader, fshader, "../../../Src/pointer.png");
-
+	ShaderFill * grid_material_slider = generateShader(vshader, fshader, "../../../Src/slider.png");
 
 	Model *m;
 
 	Planet *p;
 	p = new Planet(Vector3f(0, 0, 0), grid_material_sun, 3, 2, Vector3f(0, 0, 0));
-	plants.push_back(p);
+	planets.push_back(p);
 
 	p = new Planet(Vector3f(10, 0, 0), grid_material_earth, 1, 2, Vector3f(0, 0, 10));
-	plants.push_back(p);
+	planets.push_back(p);
+	//editedplanet.TempPlanet = new Planet(Vector3f(10, 0, 0), grid_material_earth, 1, 2, Vector3f(0, 0, 10));
+	//planets.push_back(p);
 
 	// Init Sun
 	//m = new Model(Vector3f(0, 0, 0), grid_material_sun);
@@ -302,29 +259,61 @@ void Scene::Init(int includeIntensiveGPUobject)
 	// Init Menu
 	{
 		m = new Model(Vector3f(0, 0, 0), grid_material_menu0);
-		m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
+		m->AddPlane(-6, -4, 0, 6, 4, 0, 5);
 		m->AllocateBuffers();
 		m->Pos = Vector3f(0, 0, 8);
 		menu.menuModel[0] = m;
 
 		m = new Model(Vector3f(0, 0, 0), grid_material_menu1);
-		m->AddPlane(-4, -3, 0, 4, 3, 0, 5);
+		m->AddPlane(-6, -4, 0, 6, 4, 0, 5);
 		m->AllocateBuffers();
 		m->Pos = Vector3f(0, 0, 8);
 		menu.menuModel[1] = m;
 
-		m = new Model(Vector3f(0, 0, 0), grid_material_menuT);
-		m->AddPlane(-0.4, -0.3, 0, 0.4, 0.3, 0, 5);
+		m = new Model(Vector3f(0, 0, 0), grid_material_menu2);
+		m->AddPlane(-6, -4, 0, 6, 4, 0, 5);
 		m->AllocateBuffers();
-		m->Pos = Vector3f(0, 0.5, 7.9);
+		m->Pos = Vector3f(0, 0, 8);
+		menu.menuModel[2] = m;
+
+		m = new Model(Vector3f(0, 0, 0), grid_material_menu3);
+		m->AddPlane(-6, -4, 0, 6, 4, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(0, 0, 8);
+		menu.menuModel[3] = m;
+
+		m = new Model(Vector3f(0, 0, 0), grid_material_menuT);
+		m->AddPlane(-0.5, -0.25, 0, 0.5, 0.25, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(0.42, 0.64, 7.9);
 		menu.Texture = m;
 
-
+		// pointer
 		m = new Model(Vector3f(0, 0, 0), grid_material_pointer);
 		m->AddPlane(-0.4, -0.1, 0, 0.4, 0.1, 0, 5);
 		m->AllocateBuffers();
-		m->Pos = Vector3f(2.3, 0, 8);
+		m->Pos = Vector3f(2.3, 0, 7.9);
 		menu.pointer = m;
+
+		// Color
+		m = new Model(Vector3f(0, 0, 0), grid_material_pointer);
+		m->AddPlane(-0.5, -0.4, 0, 0.5, 0.4, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(-3.2, 0.8, 7.9);
+		menu.colorChoose = m;
+
+		// Slider
+		m = new Model(Vector3f(0, 0, 0), grid_material_slider);
+		m->AddPlane(-0.4, -0.1, 0, 0.4, 0.1, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(-3.2, 0.8, 7.9);
+		menu.Slider[0] = m;
+
+		m = new Model(Vector3f(0, 0, 0), grid_material_slider);
+		m->AddPlane(-0.4, -0.1, 0, 0.4, 0.1, 0, 5);
+		m->AllocateBuffers();
+		m->Pos = Vector3f(-3.2, 0.8, 7.9);
+		menu.Slider[1] = m;
 
 		// Init Model
 		m = new Model(Vector3f(0, 0, 0), grid_material_sun);
@@ -390,42 +379,22 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 }
 
-void Scene::drawMenu(Matrix4f viewnew, Matrix4f proj)
-{
-	// draw menu
-	if (0 == menu.status)
-	{
-		menu.menuModel[0]->Render(viewnew, proj, false);
-	}
-	else if (menu.status <= 3)
-	{
-		menu.menuSphere->Render(viewnew, proj, false);
-		menu.menuModel[1]->Render(viewnew, proj, false);
-		menu.pointer->Render(viewnew, proj, false);
-		menu.Texture->Render(viewnew, proj, false);
-	}
-}
 
 void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos)
 {
-	// configure global opengl state
-	// -----------------------------
-	glEnable(GL_DEPTH_TEST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);//设置S轴拉伸方式为重复
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);//设置T轴拉伸方式为重复
-
-	//for (int i = 0; i < numModels; ++i)
-	//	Models[i]->Render(view, proj, false);
-
-	for (auto it = plants.begin(); it != plants.end(); it++)
+	for (auto it = planets.begin(); it != planets.end(); it++)
 		(*it)->Render(view, proj, pos);
 
 	// 下面内容的显示需要无视位移
 
 	Matrix4f viewnew(view.M[0][0], view.M[0][1], view.M[0][2], view.M[1][0], view.M[1][1], view.M[1][2], view.M[2][0], view.M[2][1], view.M[2][2]);
 
-	//drawMenu(viewnew, proj);
-
+	if (menu.mainstatus > 0)
+		drawMenu(viewnew, proj);
+	else if (menu.mainstatus == -1)
+	{
+		//drawEdit(view, proj, pos);
+	}
 	// draw skybox
 	for (int i = 0; i < numSkyModels; ++i)
 		SkyBoxModels[i]->Render(viewnew, proj, false);
@@ -434,84 +403,4 @@ void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos)
 
 }
 
-void Scene::drawHelp(Matrix4f view, Matrix4f proj)
-{
-	static int timer = 0;
-	static int index = 0;
-	timer++;
-
-	if (timer > 200)
-	{
-		timer -= 200;
-		index = (index + 1) % numModels;
-	}
-	Models[index]->Render(view, proj, false);
-
-}
-
-
-
-
-void Scene::ChangeShader()
-{
-	{
-		int width, height, nrChannels;
-		char *load;
-		while (menu.textureType < 0)
-		{
-			menu.textureType += 6;
-		}
-		switch (menu.textureType % 6)
-		{
-		case 0:
-			load = "../../../Src/2k_sun.jpg"; break;
-		case 1:
-			load = "../../../Src/2k_earth_daymap.jpg"; break;
-		case 2:
-			load = "../../../Src/2k_eris_fictional.jpg"; break;
-		case 3:
-			load = "../../../Src/2k_haumea_fictional.jpg"; break;
-		case 4:
-			load = "../../../Src/2k_jupiter.jpg"; break;
-		case 5:
-			load = "../../../Src/2k_mars.jpg"; break;
-		default:
-			break;
-		}
-		unsigned char *data = stbi_load(load, &width, &height, &nrChannels, 0);
-		TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-		menu.menuSphere->Fill->changTecture(generated_texture);
-	}
-
-	{
-		int width, height, nrChannels;
-		char *load;
-		switch (menu.textureType % 6)
-		{
-		case 0:
-			load = "../../../Src/menu/texture0.png"; break;
-		case 1:
-			load = "../../../Src/menu/texture1.png"; break;
-		case 2:
-			load = "../../../Src/menu/texture2.png"; break;
-		case 3:
-			load = "../../../Src/menu/texture3.png"; break;
-		case 4:
-			load = "../../../Src/menu/texture4.png"; break;
-		case 5:
-			load = "../../../Src/menu/texture5.png"; break;
-		default:
-			break;
-		}
-		unsigned char *data = stbi_load(load, &width, &height, &nrChannels, 0);
-		TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-		menu.Texture->Fill->changTecture(generated_texture);
-	}
-}
-
-
-void Scene::ChangeColor()
-{
-	menu.menuSphere->setColor(rand());
-}
 

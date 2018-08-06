@@ -963,11 +963,11 @@ struct Planet
 		Model* t = model[0];
 		Vector3f m = Pos - pos;
 		float ratio = m.Length() / radius;
-		if (ratio < 5)
+		if (ratio < 7)
 			t = model[3];
-		else if (ratio < 8)
+		else if (ratio < 10)
 			t = model[2];
-		else if (ratio < 13)
+		else if (ratio < 15)
 			t = model[1];
 
 		t->Pos = Pos;

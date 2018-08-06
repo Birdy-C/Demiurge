@@ -7,6 +7,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Scene.cpp" />
     <ClCompile Include="..\..\..\stb.cpp" />
+    <ClCompile Include="..\..\..\SceneUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\..\LibOVRKernel\Src\GL\CAPI_GLE.h">

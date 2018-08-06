@@ -34,25 +34,22 @@ e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(952): warn
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(958): warning C4305: “参数”: 从“double”到“float”截断
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(68): warning C4101: “infoLog”: 未引用的局部变量
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(67): warning C4101: “success”: 未引用的局部变量
-..\..\..\Scene.cpp(11): warning C4305: “初始化”: 从“double”到“float”截断
-..\..\..\Scene.cpp(317): warning C4305: “参数”: 从“double”到“float”截断
-..\..\..\Scene.cpp(319): warning C4305: “参数”: 从“double”到“float”截断
-..\..\..\Scene.cpp(324): warning C4305: “参数”: 从“double”到“float”截断
-..\..\..\Scene.cpp(326): warning C4305: “参数”: 从“double”到“float”截断
-..\..\..\Scene.cpp(333): warning C4305: “参数”: 从“double”到“float”截断
-..\..\..\Scene.cpp(268): warning C4100: “includeIntensiveGPUobject”: 未引用的形参
-..\..\..\Scene.cpp(274): warning C4101: “height”: 未引用的局部变量
-..\..\..\Scene.cpp(274): warning C4101: “nrChannels”: 未引用的局部变量
-..\..\..\Scene.cpp(274): warning C4101: “width”: 未引用的局部变量
-..\..\..\Scene.cpp(282): warning C4189: “grid_material_menu4”: 局部变量已初始化但不引用
-..\..\..\Scene.cpp(281): warning C4189: “grid_material_menu3”: 局部变量已初始化但不引用
-..\..\..\Scene.cpp(280): warning C4189: “grid_material_menu2”: 局部变量已初始化但不引用
-..\..\..\Scene.cpp(375): warning C4101: “generated_texturesky”: 未引用的局部变量
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(130): warning C4701: 使用了可能未初始化的局部变量“format”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(481): warning C4701: 使用了可能未初始化的局部变量“load”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(481): warning C4703: 使用了可能未初始化的本地指针变量“load”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(506): warning C4701: 使用了可能未初始化的局部变量“load”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(506): warning C4703: 使用了可能未初始化的本地指针变量“load”
+..\..\..\Scene.cpp(288): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(293): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(295): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(300): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(302): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(307): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(309): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(313): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(315): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(322): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\Scene.cpp(224): warning C4100: “includeIntensiveGPUobject”: 未引用的形参
+..\..\..\Scene.cpp(230): warning C4101: “height”: 未引用的局部变量
+..\..\..\Scene.cpp(230): warning C4101: “nrChannels”: 未引用的局部变量
+..\..\..\Scene.cpp(230): warning C4101: “width”: 未引用的局部变量
+..\..\..\Scene.cpp(364): warning C4101: “generated_texturesky”: 未引用的局部变量
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\scene.cpp(121): warning C4701: 使用了可能未初始化的局部变量“format”
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\win32_glapputil.h(122): warning C4701: 使用了可能未初始化的局部变量“format”
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).exe
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).pdb (Full PDB)
