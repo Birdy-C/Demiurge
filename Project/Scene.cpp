@@ -182,9 +182,15 @@ GLuint Scene::CreateShader(GLenum type, const char* path)
 
 void Scene::Calculate()
 {
-
 	for (auto it = planets.begin(); it != planets.end(); it++)
 		(*it)->calculate();
+
+	if (menu.mainstatus > 0)
+		calculateUI();
+	else if (menu.mainstatus == -1)
+	{
+		//drawEdit(view, proj, pos);
+	}
 
 }
 
@@ -217,7 +223,7 @@ void Scene::drawHelp(Matrix4f view, Matrix4f proj)
 
 void Scene::ChangeColor()
 {
-	menu.menuSphere->setColor(rand());
+	//menu.menuSphere->setColor(rand());
 }
 
 
@@ -240,7 +246,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 	ShaderFill * grid_material_pointer = generateShader(vshader, fshader, "../../../Src/pointer.png");
 	ShaderFill * grid_material_slider = generateShader(vshader, fshader, "../../../Src/slider.png");
 	ShaderFill *grid_material_color = generateShader(vshader, fshader, "../../../Src/color.bmp");
-	
+
 	ShaderFill * grid_material_Texture = generateShader(vshader, fshader, "../../../Src/2k_sun.jpg");
 
 
@@ -310,23 +316,22 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 		// Slider
 		m = new Model(Vector3f(0, 0, 0), grid_material_slider);
-		m->AddPlane(-0.4, -0.1, 0, 0.4, 0.1, 0, 5);
+		m->AddPlane(-0.1, -0.2, 0, 0.1, 0.2, 0, 5);
 		m->AllocateBuffers();
 		m->Pos = Vector3f(-3.2, 0.8, 7.9);
-		menu.Slider[0] = m;
+		menu.Slider = m;
 
-		m = new Model(Vector3f(0, 0, 0), grid_material_slider);
-		m->AddPlane(-0.4, -0.1, 0, 0.4, 0.1, 0, 5);
-		m->AllocateBuffers();
-		m->Pos = Vector3f(-3.2, 0.8, 7.9);
-		menu.Slider[1] = m;
 
 		// Init Model
-		m = new Model(Vector3f(0, 0, 0), grid_material_Texture);
-		m->AddSphere(0, 0, 0, 1, 10, 10);
-		m->AllocateBuffers();
-		m->Pos = Vector3f(3.7, 0.119, 8);
-		menu.menuSphere = m;
+		float r[] = { 0.8,0.9,1,1.1,1.2 };
+		for (int i = 0; i < 5; i++)
+		{
+			m = new Model(Vector3f(0, 0, 0), grid_material_Texture);
+			m->AddSphere(0, 0, 0, r[i], 20, 10);
+			m->AllocateBuffers();
+			m->Pos = Vector3f(3.7, 0.119, 8);
+			menu.menuSphere[i] = m;
+		}
 	}
 
 

@@ -12,7 +12,9 @@
 const float settedZ = 7.9;
 DWORD Color[] = { 0xFFFFFF,0xFF0000,0xFFFF00,0x00FF00,0x00FFFF };
 int SEGMENT[2][5] = { { 8,10,12,15,20}, {3,5,8,10,12} };
-
+float SLIDERX[5] = { -1.9,-2.5,-3.1,-3.7,-4.3 };
+float SLIDERY[3] = { 0.8,-0.9,-2.5 };
+float SPEED[5] = { 0.5,1,1.5,2,3 };
 Vector3f PointPos[] = {
 	Vector3f(0, 0, settedZ), Vector3f(0.4, 1.4, settedZ), Vector3f(0.4, -0.377, settedZ),Vector3f(0, 0, settedZ),
 	Vector3f(-2.6, 1.4, settedZ),Vector3f(-2.6, -0.377, settedZ),Vector3f(-2.6, -2.04, settedZ) };
@@ -25,6 +27,14 @@ Vector3f PointPos[] = {
 //}
 
 
+
+void Scene::calculateUI()
+{
+	static float clock = 0;
+	clock += SPEED[menu.speed] * 0.004;
+	menu.menuSphere[menu.size]->Rot = Quatf(Axis::Axis_Y, clock);
+
+}
 
 // ================================
 // Main UI event
@@ -77,13 +87,13 @@ void Scene::ChangeTexture()
 		{
 			data = stbi_load(load, &width, &height, &nrChannels, 0);
 			TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
-			menu.menuSphere->Fill->changTecture(generated_texture);
+			menu.menuSphere[menu.size]->Fill->changTecture(generated_texture);
 		}
 		else if (menu.textureType == 0)
 		{
 			data = (unsigned char *)Texture::generateTecture(200, 200, (Color[menu.color]), false, SEGMENT[0][menu.segment], menu.seed);
 			TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(200, 200), 4, (unsigned char *)data, 3);
-			menu.menuSphere->Fill->changTecture(generated_texture);
+			menu.menuSphere[menu.size]->Fill->changTecture(generated_texture);
 
 
 			// 不知道为什么这里直接读纯色的会出错 后来改成了1 * 1
@@ -100,7 +110,7 @@ void Scene::ChangeTexture()
 		{
 			data = (unsigned char *)Texture::generateTecture(200, 200, (Color[menu.color]), true, SEGMENT[1][menu.segment], menu.seed);
 			TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(200, 200), 4, (unsigned char *)data, 3);
-			menu.menuSphere->Fill->changTecture(generated_texture);
+			menu.menuSphere[menu.size]->Fill->changTecture(generated_texture);
 
 			data = Texture::generateTecturePure(1, 1, (Color[menu.color]));
 			generated_texture = new TextureBuffer(true, Sizei(1, 1), 4, data, 3);
@@ -226,10 +236,15 @@ void Scene::menuEvent(int i)
 				menu.color = (menu.color + 1) % 5;
 				break;
 			case 5:
-				menu.segment = (menu.segment + 1) % 5;
+				menu.segment++;
+				if (menu.segment > 4)
+					menu.segment = 4;
 				break;
 			case 6:
-				menu.seed = (menu.seed++) % 5;
+				menu.seed++;
+				if (menu.seed > 4)
+					menu.seed = 4;
+
 				break;
 			default:
 				break;
@@ -240,10 +255,19 @@ void Scene::menuEvent(int i)
 			switch (menu.pointerstatus)
 			{
 			case 4:
-				menu.speed = (menu.speed + 1) % 5;
+				menu.speed++;
+				if (menu.speed > 4)
+				{
+					menu.speed = 4;
+				}
 				break;
 			case 5:
-				menu.size = (menu.size + 1) % 5;
+				menu.size++;
+				if (menu.size > 4)
+				{
+					menu.size = 4;
+				}
+
 				break;
 			default:
 				break;
@@ -267,10 +291,15 @@ void Scene::menuEvent(int i)
 				menu.color = (menu.color + 4) % 5;
 				break;
 			case 5:
-				menu.segment = (menu.segment + 4) % 5;
+				menu.segment--;
+				if (menu.segment < 0)
+					menu.segment = 0;
 				break;
 			case 6:
-				menu.seed = (menu.seed + 4) % 5;
+				menu.seed--;
+				if (menu.seed < 0)
+					menu.seed = 0;
+
 				break;
 			default:
 				break;
@@ -281,10 +310,20 @@ void Scene::menuEvent(int i)
 			switch (menu.pointerstatus)
 			{
 			case 4:
-				menu.speed = (menu.speed + 4) % 5;
+				menu.speed--;
+				if (menu.speed < 0)
+				{
+					menu.speed = 0;
+				}
+				break;
+
 				break;
 			case 5:
-				menu.size = (menu.size + 4) % 5;
+				menu.size--;
+				if (menu.size < 0)
+				{
+					menu.size = 0;
+				}
 				break;
 			default:
 				break;
@@ -371,13 +410,28 @@ void Scene::drawMenu(Matrix4f viewnew, Matrix4f proj)
 	default:
 		break;
 	}
-	menu.menuSphere->Render(viewnew, proj, false);
+
+	menu.menuSphere[menu.size]->Render(viewnew, proj, false);
 	if (menu.pointerstatus != 0 && menu.pointerstatus != 3)
 		menu.pointer->Render(viewnew, proj, false);
 
 	menu.Texture->Render(viewnew, proj, false);
 	if (menu.mainstatus == 1 && menu.textureType < 2)
+	{
 		menu.colorChoose->Render(viewnew, proj, false);
+		menu.Slider->Pos = Vector3f(SLIDERX[menu.segment], SLIDERY[1], settedZ);
+		menu.Slider->Render(viewnew, proj, false);
+		menu.Slider->Pos = Vector3f(SLIDERX[menu.seed], SLIDERY[2], settedZ);
+		menu.Slider->Render(viewnew, proj, false);
+	}
+	else if (menu.mainstatus == 2)
+	{
+		menu.Slider->Pos = Vector3f(SLIDERX[menu.speed], SLIDERY[0], settedZ);
+		menu.Slider->Render(viewnew, proj, false);
+		menu.Slider->Pos = Vector3f(SLIDERX[menu.size], SLIDERY[1], settedZ);
+		menu.Slider->Render(viewnew, proj, false);
+
+	}
 }
 
 //void Scene::recalculateEdit()
