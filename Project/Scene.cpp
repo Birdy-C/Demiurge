@@ -186,13 +186,17 @@ void Scene::Calculate()
 		(*it)->calculate();
 
 	if (menu.mainstatus > 0)
+	{
 		calculateUI();
+	}
 	else if (menu.mainstatus == -1)
 	{
-		//drawEdit(view, proj, pos);
+		calculateEdit();
 	}
 
 }
+
+
 
 
 ShaderFill * Scene::generateShader(GLuint vertexShader, GLuint pixelShader, const char * path)
@@ -408,7 +412,7 @@ void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos)
 		drawMenu(viewnew, proj);
 	else if (menu.mainstatus == -1)
 	{
-		//drawEdit(view, proj, pos);
+		drawEdit(view, proj, pos);
 	}
 	// draw skybox
 	for (int i = 0; i < numSkyModels; ++i)

@@ -15,16 +15,11 @@ int SEGMENT[2][5] = { { 8,10,12,15,20}, {3,5,8,10,12} };
 float SLIDERX[5] = { -1.9,-2.5,-3.1,-3.7,-4.3 };
 float SLIDERY[3] = { 0.8,-0.9,-2.5 };
 float SPEED[5] = { 0.5,1,1.5,2,3 };
+float RADIUS[5] = { 0.8,0.9,1,1.1,1.2 };
+
 Vector3f PointPos[] = {
 	Vector3f(0, 0, settedZ), Vector3f(0.4, 1.4, settedZ), Vector3f(0.4, -0.377, settedZ),Vector3f(0, 0, settedZ),
 	Vector3f(-2.6, 1.4, settedZ),Vector3f(-2.6, -0.377, settedZ),Vector3f(-2.6, -2.04, settedZ) };
-
-
-
-
-//void Scene::EditingPlanet()
-//{
-//}
 
 
 
@@ -34,6 +29,11 @@ void Scene::calculateUI()
 	clock += SPEED[menu.speed] * 0.004;
 	menu.menuSphere[menu.size]->Rot = Quatf(Axis::Axis_Y, clock);
 
+}
+
+void Scene::calculateEdit()
+{
+	editedplanet.TempPlanet->calculate();
 }
 
 // ================================
@@ -129,6 +129,75 @@ void Scene::ChangeTexture()
 	}
 }
 
+void Scene::ChangeTextureToNew()
+{
+	// 设置总的Texture
+	{
+		int width, height, nrChannels;
+		char *load;
+		while (menu.textureType < 0)
+		{
+			menu.textureType += 15;
+		}
+		menu.textureType %= 15;
+
+		switch (menu.textureType)
+		{
+		case 2:
+			load = "../../../Src/2k_earth_daymap.jpg"; break;
+		case 3:
+			load = "../../../Src/2k_mercury.jpg"; break;
+		case 4:
+			load = "../../../Src/2k_venus_surface.jpg"; break;
+		case 5:
+			load = "../../../Src/2k_venus_atmosphere.jpg"; break;
+		case 6:
+			load = "../../../Src/2k_mars.jpg"; break;
+		case 7:
+			load = "../../../Src/2k_jupiter.jpg"; break;
+		case 8:
+			load = "../../../Src/2k_saturn.jpg"; break;
+		case 9:
+			load = "../../../Src/2k_uranus.jpg"; break;
+		case 10:
+			load = "../../../Src/2k_neptune.jpg"; break;
+		case 11:
+			load = "../../../Src/2k_ceres_fictional.jpg"; break;
+		case 12:
+			load = "../../../Src/2k_haumea_fictional.jpg"; break;
+		case 13:
+			load = "../../../Src/2k_makemake_fictional.jpg"; break;
+		case 14:
+			load = "../../../Src/2k_eris_fictional.jpg"; break;
+		default:
+			break;
+		}
+		unsigned char *data;
+		if (menu.textureType > 1)
+		{
+			data = stbi_load(load, &width, &height, &nrChannels, 0);
+			TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+			menu.menuSphere[menu.size]->Fill->texture = generated_texture;
+		}
+		else if (menu.textureType == 0)
+		{
+			data = (unsigned char *)Texture::generateTecture(200, 200, (Color[menu.color]), false, SEGMENT[0][menu.segment], menu.seed);
+			TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(200, 200), 4, (unsigned char *)data, 3);
+			menu.menuSphere[menu.size]->Fill->texture = generated_texture;
+		}
+	}
+
+	// 设置Texture对应的显示
+	{
+		int width, height, nrChannels;
+		std::string path = "../../../Src/menu/texture" + std::to_string(menu.textureType) + ".png";
+		unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+		TextureBuffer * generated_texture = new TextureBuffer(true, Sizei(width, height), 4, (unsigned char *)data, nrChannels);
+		menu.Texture->Fill->changTecture(generated_texture);
+	}
+}
+
+
 //Vector3f SliderPos[3][3] = {
 //	Vector3f(3, 2, settedZ),Vector3f(3, 2, settedZ),Vector3f(3, 2, settedZ),
 //	Vector3f(3, 0, settedZ) ,Vector3f(3, 0, settedZ) ,Vector3f(3, 0, settedZ),
@@ -175,8 +244,7 @@ void Scene::menuEvent(int i)
 		{
 			menu.mainstatus = -1;
 			menu.pointerstatus = 0;
-			//EditingPlanet();
-
+			EditingInit();
 		}
 		break;
 	case 2: // I
@@ -351,36 +419,37 @@ void Scene::Event(int i)
 	}
 	else
 	{
-		//switch (i)
-		//{
-		//case 0: // J
-		//	editedplanet.distance += 1;
-		//	break;
-		//case 1:
-		//	editedplanet.distance -= 1;
-		//	break;
-		//case 2: // J
-		//	editedplanet.vector += 1;
-		//	break;
-		//case 3:
-		//	editedplanet.vector -= 1;
-		//	break;
-		//case 4:case 5:
-		//{
-		//	Vector3f vec;
-		//	vec = editedplanet.TempPlanet->Pos.Cross(Vector3f(0, 1, 0));
-		//	editedplanet.TempPlanet->Velocity = vec;
-		//	planets.push_back(editedplanet.TempPlanet);
-		//	menu.mainstatus = 0;
-		//}
-		//break;
-		//default:
-		//	break;
-		//}
+		switch (i)
+		{
+		case 0: // J
+			editedplanet.distance += 0.015;
+			break;
+		case 1:
+			editedplanet.distance -= 0.015;
+			break;
+		case 2: // J
+			editedplanet.vector += 0.015;
+			break;
+		case 3:
+			editedplanet.vector -= 0.015;
+			break;
+		case 4:case 5:
+		{
+			Vector3f vec;
+			vec = editedplanet.TempPlanet->Pos.Cross(Vector3f(0, 1, 0));
+			editedplanet.TempPlanet->Velocity = vec;
+			planets.push_back(editedplanet.TempPlanet);
+			menu.mainstatus = 0;
+		}
+		break;
+		default:
+			break;
+		}
 		//recalculateEdit();
 	}
 
 }
+
 
 
 
@@ -434,15 +503,35 @@ void Scene::drawMenu(Matrix4f viewnew, Matrix4f proj)
 	}
 }
 
-//void Scene::recalculateEdit()
-//{
-//
-//}
-//
-//void Scene::drawEdit(Matrix4f view, Matrix4f proj, Vector3f pos_t)
-//{
-//	pos_t.Normalize();
-//	editedplanet.TempPlanet->Pos = pos_t * editedplanet.distance;
-//	editedplanet.TempPlanet->Render(view, proj, pos_t);
-//}
-//
+
+
+
+void Scene::EditingInit()
+{
+	GLuint    vshader = CreateShader(GL_VERTEX_SHADER, "../../../Shader/normal.vs");
+	GLuint    fshader = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/normal.fs");
+
+	editedplanet.TempPlanet = new Planet(Vector3f(10, 0, 0), new ShaderFill(vshader, fshader, menu.menuSphere[0]->Fill->texture), RADIUS[menu.size], SPEED[menu.speed], Vector3f(0, 0, 0));
+	ChangeTextureToNew();
+	editedplanet.distance = 8;
+	glDeleteShader(vshader);
+	glDeleteShader(fshader);
+}
+
+
+void Scene::recalculateEdit()
+{
+
+}
+
+void Scene::drawEdit(Matrix4f view, Matrix4f proj, Vector3f pos_t)
+{
+	
+	editedplanet.TempPlanet->Render(view, proj, pos_t);
+	pos_t.Normalize();
+	Vector3f temp = pos_t.Cross(Vector3f(0, 1, 0));
+	temp.Normalize();
+	Vector3f des = temp + pos_t;
+	editedplanet.TempPlanet->Pos = des * editedplanet.distance;
+}
+
