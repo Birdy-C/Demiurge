@@ -306,7 +306,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 		// pointer
 		m = new Model(Vector3f(0, 0, 0), grid_material_pointer);
-		m->AddPlane(-0.4, -0.1, 0, 0.4, 0.1, 0, 5);
+		m->AddPlane(-0.4, -0.06, 0, 0.4, 0.06, 0, 5);
 		m->AllocateBuffers();
 		m->Pos = Vector3f(2.3, 0, 7.9);
 		menu.pointer = m;
@@ -320,7 +320,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 		// Slider
 		m = new Model(Vector3f(0, 0, 0), grid_material_slider);
-		m->AddPlane(-0.1, -0.2, 0, 0.1, 0.2, 0, 5);
+		m->AddPlane(-0.2, -0.16, 0, 0.2, 0.16, 0, 5);
 		m->AllocateBuffers();
 		m->Pos = Vector3f(-3.2, 0.8, 7.9);
 		menu.Slider = m;
@@ -342,7 +342,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 	// Init Help
 
 	{
-		numModels = 6;
+		numModels = 36;
 		ShaderFill * material;
 		for (int i = 0; i < numModels; i++)
 		{
@@ -399,7 +399,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 }
 
 
-void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos)
+void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos, Matrix4f viewfollow)
 {
 	for (auto it = planets.begin(); it != planets.end(); it++)
 		(*it)->Render(view, proj, pos);
@@ -412,7 +412,7 @@ void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos)
 		drawMenu(viewnew, proj);
 	else if (menu.mainstatus == -1)
 	{
-		drawEdit(view, proj, pos);
+		drawEdit(view, proj, pos, viewfollow);
 	}
 	// draw skybox
 	for (int i = 0; i < numSkyModels; ++i)

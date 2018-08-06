@@ -72,7 +72,7 @@ public:
 			}
 		}
 
-		stbi_write_bmp("../../../test.bmp", width, height, 3, texture);
+		//stbi_write_bmp("../../../test.bmp", width, height, 3, texture);
 		return texture;
 	}
 

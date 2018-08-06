@@ -786,6 +786,31 @@ struct Model
 
 	}
 
+	void AddNormalPlane(Vector3f ver[4] )
+	{
+
+		GLushort CubeIndices[] =
+		{
+			0, 3, 1, 0, 2, 3,
+		};
+
+		for (int i = 0; i < 6; i++)
+		{
+			AddIndex(CubeIndices[i] + GLushort(numVertices));
+		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			// Make vertices, with some token lighting
+			Vertex vvv; vvv.Pos = ver[i]; vvv.U = ver[i].x > 0 ? 0 : 1; vvv.V = ver[i].y > 0 ? 0 : 1;;
+			vvv.C = 0xFFFFFFFF;
+			AddVertex(vvv);
+
+		}
+
+
+	}
+
 	const float PI = 3.1415926;
 
 	// x y z 为圆心， theta step 和 phi step 决定插值的段数

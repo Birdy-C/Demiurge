@@ -11,7 +11,7 @@ e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(45)
   e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(271): note: 参见对正在编译的类 模板 实例化“glm::vec<4,T,Q>”的引用
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(46): warning C4201: 使用了非标准扩展: 无名称的结构/联合
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\glm\detail/type_vec4.hpp(47): warning C4201: 使用了非标准扩展: 无名称的结构/联合
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(789): warning C4305: “初始化”: 从“double”到“const float”截断
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(814): warning C4305: “初始化”: 从“double”到“const float”截断
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(587): warning C4458: “Pos”的声明隐藏了类成员
   e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(547): note: 参见“Model::Pos”的声明
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(702): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
@@ -22,20 +22,19 @@ e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(762): warn
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(763): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(764): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(770): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(811): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(812): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(813): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(814): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(815): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(816): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(912): warning C4305: “初始化”: 从“double”到“float”截断
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(951): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(952): warning C4305: “参数”: 从“double”到“float”截断
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(958): warning C4305: “参数”: 从“double”到“float”截断
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(805): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(836): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(837): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(838): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(839): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(840): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(841): warning C4244: “参数”: 从“int”转换到“GLushort”，可能丢失数据
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(937): warning C4305: “初始化”: 从“double”到“float”截断
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(976): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(977): warning C4305: “参数”: 从“double”到“float”截断
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\Win32_GLAppUtil.h(983): warning C4305: “参数”: 从“double”到“float”截断
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(68): warning C4101: “infoLog”: 未引用的局部变量
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\shader.h(67): warning C4101: “success”: 未引用的局部变量
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Scene.h(41): warning C4156: 未使用数组形式的“delete”删除数组表达式；数组形式被替代
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\Scene.h(41): warning C4154: 删除数组表达式；转换到提供的指针
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Texture.h(21): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Texture.h(22): warning C4244: “=”: 从“float”转换到“char”，可能丢失数据
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Texture.h(23): warning C4244: “=”: 从“float”转换到“char”，可能丢失数据
@@ -55,23 +54,25 @@ e:\2017春夏\vr\oculussdk\samples\demiurge\project\Texture.h(68): warning C4244
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Texture.h(69): warning C4244: “=”: 从“float”转换到“char”，可能丢失数据
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\Texture.h(70): warning C4244: “=”: 从“float”转换到“char”，可能丢失数据
 ..\..\..\SceneUI.cpp(12): warning C4305: “初始化”: 从“double”到“float”截断
-..\..\..\SceneUI.cpp(15): warning C4838: 从“double”转换到“float”需要收缩转换
-..\..\..\SceneUI.cpp(15): warning C4305: “初始化”: 从“double”到“float”截断
 ..\..\..\SceneUI.cpp(16): warning C4838: 从“double”转换到“float”需要收缩转换
 ..\..\..\SceneUI.cpp(16): warning C4305: “初始化”: 从“double”到“float”截断
-..\..\..\SceneUI.cpp(18): warning C4838: 从“double”转换到“float”需要收缩转换
-..\..\..\SceneUI.cpp(18): warning C4305: “初始化”: 从“double”到“float”截断
-..\..\..\SceneUI.cpp(21): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\SceneUI.cpp(17): warning C4838: 从“double”转换到“float”需要收缩转换
+..\..\..\SceneUI.cpp(17): warning C4305: “初始化”: 从“double”到“float”截断
+..\..\..\SceneUI.cpp(19): warning C4838: 从“double”转换到“float”需要收缩转换
+..\..\..\SceneUI.cpp(19): warning C4305: “初始化”: 从“double”到“float”截断
 ..\..\..\SceneUI.cpp(22): warning C4305: “参数”: 从“double”到“float”截断
-..\..\..\SceneUI.cpp(29): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
-..\..\..\SceneUI.cpp(425): warning C4305: “+=”: 从“double”到“float”截断
+..\..\..\SceneUI.cpp(23): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\SceneUI.cpp(30): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+..\..\..\SceneUI.cpp(423): warning C4305: “+=”: 从“double”到“float”截断
 ..\..\..\SceneUI.cpp(428): warning C4305: “-=”: 从“double”到“float”截断
-..\..\..\SceneUI.cpp(431): warning C4305: “+=”: 从“double”到“float”截断
-..\..\..\SceneUI.cpp(434): warning C4305: “-=”: 从“double”到“float”截断
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\sceneui.cpp(178): warning C4701: 使用了可能未初始化的局部变量“load”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\sceneui.cpp(178): warning C4703: 使用了可能未初始化的本地指针变量“load”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\sceneui.cpp(88): warning C4701: 使用了可能未初始化的局部变量“load”
-e:\2017春夏\vr\oculussdk\samples\demiurge\project\sceneui.cpp(88): warning C4703: 使用了可能未初始化的本地指针变量“load”
+..\..\..\SceneUI.cpp(433): warning C4305: “+=”: 从“double”到“float”截断
+..\..\..\SceneUI.cpp(438): warning C4305: “-=”: 从“double”到“float”截断
+..\..\..\SceneUI.cpp(546): warning C4305: “参数”: 从“double”到“float”截断
+..\..\..\SceneUI.cpp(529): warning C4100: “viewfollow”: 未引用的形参
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\sceneui.cpp(179): warning C4701: 使用了可能未初始化的局部变量“load”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\sceneui.cpp(89): warning C4701: 使用了可能未初始化的局部变量“load”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\sceneui.cpp(89): warning C4703: 使用了可能未初始化的本地指针变量“load”
+e:\2017春夏\vr\oculussdk\samples\demiurge\project\sceneui.cpp(179): warning C4703: 使用了可能未初始化的本地指针变量“load”
 e:\2017春夏\vr\oculussdk\samples\demiurge\project\win32_glapputil.h(122): warning C4701: 使用了可能未初始化的局部变量“format”
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).exe
   OculusRoomTiny (GL).vcxproj -> E:\2017春夏\VR\OculusSDK\Samples\Demiurge\Project\Projects\Windows\VS2015\..\..\..\Bin\Windows\Win32\Debug\VS2015\OculusRoomTiny (GL).pdb (Full PDB)

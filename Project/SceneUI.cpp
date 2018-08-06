@@ -10,16 +10,17 @@
 #include <string>     // std::string, std::to_string
 
 const float settedZ = 7.9;
-DWORD Color[] = { 0xFFFFFF,0xFF0000,0xFFFF00,0x00FF00,0x00FFFF };
+DWORD Color[] = { 0xFFFFFF,0xedd36a,0x5c9459,0x5691b7,0xac2719};
+
 int SEGMENT[2][5] = { { 8,10,12,15,20}, {3,5,8,10,12} };
 float SLIDERX[5] = { -1.9,-2.5,-3.1,-3.7,-4.3 };
-float SLIDERY[3] = { 0.8,-0.9,-2.5 };
+float SLIDERY[3] = { 0.8,-0.9,-2.4 };
 float SPEED[5] = { 0.5,1,1.5,2,3 };
 float RADIUS[5] = { 0.8,0.9,1,1.1,1.2 };
 
 Vector3f PointPos[] = {
-	Vector3f(0, 0, settedZ), Vector3f(0.4, 1.4, settedZ), Vector3f(0.4, -0.377, settedZ),Vector3f(0, 0, settedZ),
-	Vector3f(-2.6, 1.4, settedZ),Vector3f(-2.6, -0.377, settedZ),Vector3f(-2.6, -2.04, settedZ) };
+	Vector3f(0, 0, settedZ), Vector3f(0.4, 1.35, settedZ), Vector3f(0.4, -0.377, settedZ),Vector3f(0, 0, settedZ),
+	Vector3f(-2.9, 1.4, settedZ),Vector3f(-2.9, -0.377, settedZ),Vector3f(-2.9, -2.04, settedZ) };
 
 
 
@@ -220,10 +221,7 @@ void Scene::menuEvent(int i)
 		{
 			menu.pointerstatus = menu.mainstatus;
 		}
-		else
-		{
-			assert(!"should not get there");
-		}
+
 		break;
 
 	case 1: // L
@@ -423,15 +421,23 @@ void Scene::Event(int i)
 		{
 		case 0: // J
 			editedplanet.distance += 0.015;
+			if (editedplanet.distance > 15)
+				editedplanet.distance = 15;
 			break;
 		case 1:
 			editedplanet.distance -= 0.015;
+			if (editedplanet.distance < 5)
+				editedplanet.distance = 5;
 			break;
 		case 2: // J
 			editedplanet.vector += 0.015;
+			if (editedplanet.vector > 5)
+				editedplanet.vector = 5;
 			break;
 		case 3:
 			editedplanet.vector -= 0.015;
+			if (editedplanet.vector < 1)
+				editedplanet.vector = 1;
 			break;
 		case 4:case 5:
 		{
@@ -508,14 +514,10 @@ void Scene::drawMenu(Matrix4f viewnew, Matrix4f proj)
 
 void Scene::EditingInit()
 {
-	GLuint    vshader = CreateShader(GL_VERTEX_SHADER, "../../../Shader/normal.vs");
-	GLuint    fshader = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/normal.fs");
-
-	editedplanet.TempPlanet = new Planet(Vector3f(10, 0, 0), new ShaderFill(vshader, fshader, menu.menuSphere[0]->Fill->texture), RADIUS[menu.size], SPEED[menu.speed], Vector3f(0, 0, 0));
+	editedplanet.TempPlanet = new Planet(Vector3f(10, 0, 0), new ShaderFill(vshadert, fshadert, menu.menuSphere[0]->Fill->texture), RADIUS[menu.size], SPEED[menu.speed], Vector3f(0, 0, 0));
 	ChangeTextureToNew();
+	editedplanet.vector = 3;
 	editedplanet.distance = 8;
-	glDeleteShader(vshader);
-	glDeleteShader(fshader);
 }
 
 
@@ -524,14 +526,28 @@ void Scene::recalculateEdit()
 
 }
 
-void Scene::drawEdit(Matrix4f view, Matrix4f proj, Vector3f pos_t)
+void Scene::drawEdit(Matrix4f view, Matrix4f proj, Vector3f pos_m, Matrix4f viewfollow)
 {
-	
+
+	Vector3f pos_t = pos_m;
 	editedplanet.TempPlanet->Render(view, proj, pos_t);
 	pos_t.Normalize();
 	Vector3f temp = pos_t.Cross(Vector3f(0, 1, 0));
 	temp.Normalize();
 	Vector3f des = temp + pos_t;
 	editedplanet.TempPlanet->Pos = des * editedplanet.distance;
+
+
+	Model *m;
+	m = new Model(Vector3f(0, 0, 0), material_line);
+	Vector3f temp2 = (pos_m - editedplanet.TempPlanet->Pos).Cross(Vector3f(0, 1, 0));
+	temp2.Normalize();
+	Vector3f temp1 = temp2*editedplanet.vector/2;
+	Vector3f ver[4] = { -temp1 + Vector3f(0,0.2,0),temp1 + Vector3f(0,0.2,0),-temp1 - Vector3f(0,0.2,0),temp1 - Vector3f(0,0.2,0) };
+	m->AddNormalPlane(ver);
+	m->AllocateBuffers();
+	m->Pos = Vector3f((editedplanet.TempPlanet->Pos).x, -RADIUS[menu.size] - 1, (editedplanet.TempPlanet->Pos).z);
+	m->Render(view, proj, false);
+	delete m;
 }
 
