@@ -184,12 +184,9 @@ GLuint Scene::CreateShader(GLenum type, const char* path)
 
 void Scene::Calculate()
 {
-	static float cubeClock = 0;
-	cubeClock += 0.015f;
-	// roomScene->Models[0]->Pos = Vector3f(9 * (float)sin(cubeClock), 3, 9 * (float)cos(cubeClock));
-	// TODO change position and recalculate
-	menu.menuSphere->Rot = Quatf(Axis::Axis_Y, cubeClock);
 
+	for (auto it = plants.begin(); it != plants.end(); it++)
+		(*it)->calculate();
 
 }
 
@@ -266,11 +263,11 @@ void Scene::Init(int includeIntensiveGPUobject)
 	GLuint    vshader = CreateShader(GL_VERTEX_SHADER, "../../../Shader/normal.vs");
 	GLuint    fshader = CreateShader(GL_FRAGMENT_SHADER, "../../../Shader/normal.fs");
 
-	// 我绝对要给写这个的差评……
 	// Make textures
 	int width, height, nrChannels;
 
-	ShaderFill * grid_material_sun = generateShader(vshader, fshader, "../../../Src/2k_uranus.jpg");
+	ShaderFill * grid_material_sun = generateShader(vshader, fshader, "../../../Src/2k_sun.jpg");
+	ShaderFill * grid_material_earth = generateShader(vshader, fshader, "../../../Src/2k_earth_daymap.jpg");
 	ShaderFill * grid_material_menu0 = generateShader(vshader, fshader, "../../../Src/menu0.png");
 	ShaderFill * grid_material_menu1 = generateShader(vshader, fshader, "../../../Src/menu1.png");
 	ShaderFill * grid_material_menu2 = generateShader(vshader, fshader, "../../../Src/menu2.png");
@@ -282,12 +279,18 @@ void Scene::Init(int includeIntensiveGPUobject)
 	glDeleteShader(fshader);
 
 	Model *m;
-	Planet *p = new Planet(Vector3f(0, 0, 0), grid_material_sun, 10, 10);
+
+	Planet *p;
+	p = new Planet(Vector3f(0, 0, 0), grid_material_sun, 3, 2, Vector3f(0, 0, 0));
 	plants.push_back(p);
+
+	p = new Planet(Vector3f(10, 0, 0), grid_material_earth, 1, 2, Vector3f(0, 0,10));
+	plants.push_back(p);
+
 	// Init Sun
-	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
-	m->AddSphere(0, 0, 0, 5, 20, 20);
-	m->AllocateBuffers();
+	//m = new Model(Vector3f(0, 0, 0), grid_material_sun);
+	//m->AddSphere(0, 0, 0, 5, 20, 20);
+	//m->AllocateBuffers();
 	//Add(m);
 
 	// Init Menu
@@ -311,7 +314,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 
 
 	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
-	m->AddSphere(0, 0, 0, 0.5, 10, 10);
+	m->AddPlane(-0.4, -0.3, 0, 0.4, 0.3, 0, 5);
 	m->AllocateBuffers();
 	m->Pos = Vector3f(2.3, 0, 8);
 	menu.pointer = m;

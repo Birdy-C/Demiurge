@@ -908,15 +908,16 @@ struct Model
 // 星球的结构，做LOD以及其他计算
 struct Planet
 {
-	float r;
+	float radius;
 	float rotate = 0.15;
 	Quatf Rot;
 	float clock = 0;
 	Model *model[4];
 	Vector3f Pos;
+	Vector3f Velocity;
 
-	Planet(Vector3f pos, ShaderFill * fill, float r_t, float rotate_t)
-		:rotate(rotate_t), r(r_t)
+	Planet(Vector3f pos, ShaderFill * fill, float r_t, float rotate_t, Vector3f vel)
+		:Pos(pos), rotate(rotate_t), radius(r_t), Velocity(vel)
 	{
 		model[0] = new Model(pos, fill);
 		model[0]->AddSphere(0, 0, 0, r_t, 7, 5);
@@ -947,20 +948,29 @@ struct Planet
 
 	void calculate()
 	{
-		clock += rotate;
+		clock += rotate * 0.004;
+		Pos += Velocity * 0.001;
+		// 以原点为中心计算
+
+		float r = Pos.Length();
+		if (r == 0)
+			return;
+		Velocity += -Pos / r * 0.01;
 	}
 
 	void Render(Matrix4f view, Matrix4f proj, Vector3f pos)
 	{
 		Model* t = model[0];
 		Vector3f m = Pos - pos;
-		float ratio = m.Length() / r;
+		float ratio = m.Length() / radius;
 		if (ratio < 5)
 			t = model[3];
 		else if (ratio < 8)
 			t = model[2];
 		else if (ratio < 13)
 			t = model[1];
+
+		t->Pos = Pos;
 		t->Rot = Quatf(Axis::Axis_Y, clock);
 		t->Render(view, proj, false);
 	}
