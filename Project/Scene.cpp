@@ -282,11 +282,13 @@ void Scene::Init(int includeIntensiveGPUobject)
 	glDeleteShader(fshader);
 
 	Model *m;
+	Planet *p = new Planet(Vector3f(0, 0, 0), grid_material_sun, 10, 10);
+	plants.push_back(p);
 	// Init Sun
 	m = new Model(Vector3f(0, 0, 0), grid_material_sun);
 	m->AddSphere(0, 0, 0, 5, 20, 20);
 	m->AllocateBuffers();
-	Add(m);
+	//Add(m);
 
 	// Init Menu
 	m = new Model(Vector3f(0, 0, 0), grid_material_menu0);
@@ -349,7 +351,7 @@ void Scene::Init(int includeIntensiveGPUobject)
 		grid_materialsky[i] = generateShader(vshader, fshader, faces.at(i).c_str());
 
 		Model *m_sky = new Model(Vector3f(0, 0, 0), grid_materialsky[i]);
-		m_sky->AddPlane(-100.0f, -100.0f, -100.0f, 100.0f, 100.0f, 100.0f, i);
+		m_sky->AddPlane(-150.0f, -150.0f, -150.0f, 150.0f, 150.0f, 150.0f, i);
 		m_sky->AllocateBuffers();
 		AddSky(m_sky);
 	}
@@ -375,7 +377,7 @@ void Scene::drawMenu(Matrix4f viewnew, Matrix4f proj)
 	}
 }
 
-void Scene::Render(Matrix4f view, Matrix4f proj)
+void Scene::Render(Matrix4f view, Matrix4f proj, Vector3f pos)
 {
 	// configure global opengl state
 	// -----------------------------
@@ -386,8 +388,10 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 	for (int i = 0; i < numModels; ++i)
 		Models[i]->Render(view, proj, false);
 
+	for (auto it = plants.begin(); it != plants.end(); it++)
+		(*it)->Render(view, proj, pos);
 
-	//// 下面内容的显示需要无视位移
+	// 下面内容的显示需要无视位移
 
 	Matrix4f viewnew(view.M[0][0], view.M[0][1], view.M[0][2], view.M[1][0], view.M[1][1], view.M[1][2], view.M[2][0], view.M[2][1], view.M[2][2]);
 
@@ -396,6 +400,8 @@ void Scene::Render(Matrix4f view, Matrix4f proj)
 	// draw skybox
 	for (int i = 0; i < numSkyModels; ++i)
 		SkyBoxModels[i]->Render(viewnew, proj, false);
+
+
 }
 
 

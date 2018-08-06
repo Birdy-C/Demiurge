@@ -905,6 +905,67 @@ struct Model
 };
 
 
+// 星球的结构，做LOD以及其他计算
+struct Planet
+{
+	float r;
+	float rotate = 0.15;
+	Quatf Rot;
+	float clock = 0;
+	Model *model[4];
+	Vector3f Pos;
+
+	Planet(Vector3f pos, ShaderFill * fill, float r_t, float rotate_t)
+		:rotate(rotate_t), r(r_t)
+	{
+		model[0] = new Model(pos, fill);
+		model[0]->AddSphere(0, 0, 0, r_t, 7, 5);
+		model[0]->AllocateBuffers();
+
+		model[1] = new Model(pos, fill);
+		model[1]->AddSphere(0, 0, 0, r_t, 10, 7);
+		model[1]->AllocateBuffers();
+
+		model[2] = new Model(pos, fill);
+		model[2]->AddSphere(0, 0, 0, r_t, 15, 10);
+		model[2]->AllocateBuffers();
+
+		model[3] = new Model(pos, fill);
+		model[3]->AddSphere(0, 0, 0, r_t, 20, 15);
+		model[3]->AllocateBuffers();
+
+	}
+
+	~Planet()
+	{
+		delete model[0];
+		delete model[1];
+		delete model[2];
+		delete model[3];
+	}
+
+
+	void calculate()
+	{
+		clock += rotate;
+	}
+
+	void Render(Matrix4f view, Matrix4f proj, Vector3f pos)
+	{
+		Model* t = model[0];
+		Vector3f m = Pos - pos;
+		float ratio = m.Length() / r;
+		if (ratio < 5)
+			t = model[3];
+		else if (ratio < 8)
+			t = model[2];
+		else if (ratio < 13)
+			t = model[1];
+		t->Rot = Quatf(Axis::Axis_Y, clock);
+		t->Render(view, proj, false);
+	}
+
+};
 //------------------------------------------------------------------------- 
 
 #endif // OVR_Win32_GLAppUtil_h
